@@ -1,0 +1,23 @@
+# Secrets & environment
+.env
+.env.*
+*.pem
+.dev.vars
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node / Workers
+node_modules/
+dist/
+.wrangler/
+
+# Corpus raw snapshots are committed deliberately; scratch downloads are not
+corpus/tmp/
+
+# OS / editor
+.DS_Store
