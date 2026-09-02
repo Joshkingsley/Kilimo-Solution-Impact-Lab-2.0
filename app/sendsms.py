@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import sys
 import argparse
 import logging
+import os
+import sys
 
 # Set up simple logging for console outputs
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -23,10 +24,16 @@ except ImportError:
 # =====================================================================
 # CONFIGURATION SETTINGS
 # =====================================================================
-# Update these configuration values before running the script
-USERNAME = "ClearPath_Credit"  # Change to your live username if not testing in sandbox
-API_KEY = "atsk_546ecdc213fd851ea0943ff92bc1fc4ef67cdb47baa3b89a92b874847951c212cdd20e98"  # Replace with your Africa's Talking API Key
-SENDER_ID = "AFTKNG" # Replace with your approved Sender ID/Shortcode, or leave as None
+# Credentials come from the environment, never from source (SPEC.md §11.1, repo
+# rule: no secrets committed). Copy .env.example to .env and export it, or set
+# the variables in your shell. Use "sandbox" as the username for the AT sandbox.
+USERNAME = os.environ.get("AT_USERNAME", "sandbox")
+API_KEY = os.environ.get("AT_API_KEY")
+SENDER_ID = os.environ.get("AT_SENDER_ID") or None  # approved sender ID / shortcode, or None
+
+if not API_KEY:
+    logging.error("AT_API_KEY is not set. Export it (see .env.example) before sending.")
+    sys.exit(1)
 
 
 # =====================================================================

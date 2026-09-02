@@ -156,3 +156,12 @@ evals floor 40, simulator-first handset criterion. **Open Day-0 item: request
 the Africa's Talking sender ID — not done, do first on Day 1.** The remote
 also has a teammate FastAPI skeleton under `app/` — fold into `ingest/` or
 remove on Day 1.
+
+## SECURITY — action required (2026-09-02)
+
+A teammate committed a live Africa's Talking API key (username
+`ClearPath_Credit`, sender `AFTKNG`) in `app/sendsms.py` (remote commit
+`46f3be6`). The repo is public, so the key is compromised regardless of the
+follow-up fix. **Rotate it in the Africa's Talking dashboard now.** The file
+now reads `AT_USERNAME` / `AT_API_KEY` / `AT_SENDER_ID` from the environment
+(see `.env.example`); `.env` is git-ignored. Do not paste keys into source again.
