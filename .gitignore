@@ -22,3 +22,8 @@ corpus/tmp/
 
 # OS / editor
 .DS_Store
+
+# RAG local index (rebuildable offline from corpus/raw via `python -m app.rag.cli ingest`)
+data/*.sqlite3
+data/*.sqlite3-wal
+data/*.sqlite3-shm

@@ -23,6 +23,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel, Field
@@ -31,6 +33,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "demo"))
 
 import nitapata_demo as nd
+
+from app.rag.api import router as rag_router          # RAG service — docs/RAG.md
+from app.rag.pipeline import build_pipeline
+from app.rag.security import install_log_redaction
 
 log = logging.getLogger("nitapata")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -48,7 +54,24 @@ STOP_LINE = "Sawa. Hatuhifadhi chochote kukuhusu; mazungumzo yamefutwa."
 KEYWORDS = {"HELP", "MSAADA", "STOP"}
 
 CHUNKS = nd.load_chunks()
-app = FastAPI(title="Nitapata?", version="0.1.0", docs_url="/docs")
+install_log_redaction()   # SPEC §12 — anything phone-number-shaped is redacted from every log line
+
+
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    """Build the RAG pipeline once (opens the SQLite index, constructs the embedder + LLM client)."""
+    try:
+        app.state.pipeline = build_pipeline()
+    except Exception as exc:  # the SMS webhook must keep working even if the RAG is misconfigured
+        log.error("RAG pipeline unavailable: %s", exc)
+        app.state.pipeline = None
+    yield
+    if getattr(app.state, "pipeline", None) is not None:
+        app.state.pipeline.store.close()
+
+
+app = FastAPI(title="Nitapata?", version="0.1.0", docs_url="/docs", lifespan=_lifespan)
+app.include_router(rag_router)   # /v1/rag/* — API-key protected, see docs/RAG.md
 
 
 # --- helpers -----------------------------------------------------------------
