@@ -59,3 +59,20 @@ appears it should be added and will outrank the county page.
 - NCPB FAQ is a single A3 page with a real text layer — no OCR needed.
 - kenyans.co.ke, the-star.co.ke and gazettes.africa search block automated
   fetches (403); they are discovery aids only anyway.
+
+## §7.5 coverage checklist (added with spec v1.2)
+
+Corpus count: 8 registered (7 citable + 1 context-only). Floor 5 met, ceiling 15 respected.
+
+| # | Intent | Result | Document · locator · date |
+|---|---|---|---|
+| 1 | Eligibility | FOUND | NCPB FAQ · Uk.1 Q2 · 2022-10 |
+| 2 | Registration process | PARTIAL | NCPB FAQ · Uk.1 Q5–Q6 · 2022-10 (where, free). Enumerated KIAMIS steps: **NOT FOUND** |
+| 3 | Price (current, primary) | FOUND | Kaunti ya Kakamega · ¶2 · 24/08/2026 (KSh 2,000). Machakos: **NOT FOUND** |
+| 4 | Depot / availability | PARTIAL | Kaunti ya Kakamega · ¶4 · 26/02/2026 (20 points). Named list: **NOT FOUND** |
+| 5 | E-voucher / requirements | FOUND (minimal) | NCPB FAQ · Uk.1 Q3 (in person, original ID, name in register), Q10 (M-Pesa/bank, no cash), Q11 (no credit) · 2022-10; Wizara ya Kilimo · ¶6 · 18/12/2024 (e-vouchers to registered farmers). Allocation-SMS / eCitizen steps: **NOT FOUND** |
+| 6 | Cycle / timing | PARTIAL | Kaunti ya Kakamega · ¶2 · 24/08/2026 ("prepare for the short rains"). Start dates only for 2025-LR: Wizara ya Kilimo · ¶5 · 18/12/2024 |
+| 7 | Stale-price trap | FOUND | NCPB FAQ · Uk.1 Q9 · 2022-10 (3,500); Wizara ya Kilimo · ¶7 · 18/12/2024 (2,500); Kaunti ya Kakamega · ¶2 · 26/02/2026 (2,500) |
+
+Day-1 hunt priority: a KIAMIS or NCPB page enumerating redemption steps (row 5),
+then a Kakamega collection-point list (row 4), then the Gazette.

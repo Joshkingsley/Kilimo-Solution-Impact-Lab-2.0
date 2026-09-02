@@ -29,7 +29,7 @@ prediction, insurance, credit.
 | `corpus/raw/` | NCPB FAQ PDF + 5 government HTML pages snapshotted |
 | `corpus/chunks.jsonl` | 20 hand-cut chunks, verbatim from real documents, page/date/cycle/county tagged |
 | `demo/nitapata_demo.py` | Rules-based (no LLM yet) pipeline demo — runs clean, verified |
-| `evals/messages.yaml` + `test_outcomes.py` | 12/≥30 seeded cases, all passing |
+| `evals/messages.yaml` + `test_outcomes.py` | 12/≥40 seeded cases, all passing |
 | Worker/ingestion build code | **None yet** — Day 1 |
 
 ## The two HACKATHON pins (brief, 11:00 wall) — DONE, in `docs/pins/`
@@ -134,7 +134,7 @@ outcome class; recorded-replay demo mode for dead venue Wi-Fi.
    API is the fallback per SPEC.md open question 4.
 7. Then Days 2–4 per SPEC.md build plan (Worker pipeline replaces
    `demo/nitapata_demo.py`'s templated generation with real Haiku calls;
-   grow `evals/messages.yaml` from 12 to ≥30 cases).
+   grow `evals/messages.yaml` from 12 to ≥40 cases).
 
 ## Kickoff prompt for next session
 
@@ -143,3 +143,16 @@ outcome class; recorded-replay demo mode for dead venue Wi-Fi.
 > (Kakamega demo county, tiered citation hierarchy). Start Day 1: build the
 > real ingestion CLI against corpus/sources.yaml, push to Vectorize + D1,
 > and run the retrieval sanity check on the three Kakamega-persona questions.
+
+## Spec v1.2 (merged with teammate's v0.2 contract update)
+
+Teammate pushed a v0.2 draft to GitHub mid-session; folded into `SPEC.md` as
+v1.2 (their draft archived at `docs/archive/SPEC-0.2-contract-draft.md`). New
+in v1.2: requirements + gap components with a closed `DeclaredFlag` enum
+(§4.1), corpus coverage checklist filled from Day 0 (§7.5), frozen reply
+template + trim order, 306-char budget (§9.5), keyword commands EN/SW/
+MSAADA/STOP (§9.6), translate-before-retrieve as first embedding fallback,
+evals floor 40, simulator-first handset criterion. **Open Day-0 item: request
+the Africa's Talking sender ID — not done, do first on Day 1.** The remote
+also has a teammate FastAPI skeleton under `app/` — fold into `ingest/` or
+remove on Day 1.
