@@ -165,3 +165,14 @@ A teammate committed a live Africa's Talking API key (username
 follow-up fix. **Rotate it in the Africa's Talking dashboard now.** The file
 now reads `AT_USERNAME` / `AT_API_KEY` / `AT_SENDER_ID` from the environment
 (see `.env.example`); `.env` is git-ignored. Do not paste keys into source again.
+
+## SMS webhook — built 2026-09-02 (automated part of the live demo)
+
+`app/main.py` (FastAPI): `POST /sms/inbound` receives Africa's Talking
+callbacks, HMAC-hashes the number, runs the pipeline, replies via the AT SDK
+(or logs in `DRY_RUN`). `POST /demo/message` returns full judge-panel
+diagnostics without sending. Keywords `MSAADA`/`HELP`/`STOP` per spec §9.6.
+Scripts: `scripts/run_sms.sh`, `scripts/tunnel.sh`, `scripts/smoke_sms.sh`.
+Tests: `tests/test_webhook.py` (8) + `evals/` (12) — 20 green.
+**Manual steps that remain are in `docs/SMS-LIVE-RUNBOOK.md`** (rotate key,
+sandbox key, tunnel install, callback URL, simulator, sender-ID request).

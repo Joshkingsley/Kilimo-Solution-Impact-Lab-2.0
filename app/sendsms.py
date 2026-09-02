@@ -31,9 +31,12 @@ USERNAME = os.environ.get("AT_USERNAME", "sandbox")
 API_KEY = os.environ.get("AT_API_KEY")
 SENDER_ID = os.environ.get("AT_SENDER_ID") or None  # approved sender ID / shortcode, or None
 
-if not API_KEY:
-    logging.error("AT_API_KEY is not set. Export it (see .env.example) before sending.")
-    sys.exit(1)
+
+def require_credentials() -> None:
+    """Fail loudly when credentials are missing. Called at send time, not import time,
+    so the web app can start (and run in DRY_RUN) without a key."""
+    if not API_KEY:
+        raise RuntimeError("AT_API_KEY is not set. Export it (see .env.example) before sending.")
 
 
 # =====================================================================
@@ -81,14 +84,16 @@ def send_sms(phone_number: str, message: str) -> dict:
     Initializes the Africa's Talking SDK and dispatches the SMS directly 
     to the designated customer phone number.
     """
-    # Initialize the SDK
+    require_credentials()
     africastalking.initialize(USERNAME, API_KEY)
     sms_service = africastalking.SMS
-    
-    logging.info(f"Attempting to send SMS to {phone_number}...")
+
+    # Never log the raw MSISDN (SPEC.md §13) — last three digits are enough to debug.
+    logging.info(f"Attempting to send SMS to ...{phone_number[-3:]}")
     try:
-        # Send message
-        response = sms_service.send(message, [phone_number], sender_id=SENDER_ID)
+        # Sandbox accounts must not pass a sender_id.
+        kwargs = {"sender_id": SENDER_ID} if SENDER_ID else {}
+        response = sms_service.send(message, [phone_number], **kwargs)
         return response
     except Exception as e:
         logging.error(f"Failed to dispatch SMS: {e}")
