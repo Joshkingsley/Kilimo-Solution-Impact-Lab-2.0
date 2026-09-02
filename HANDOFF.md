@@ -1,6 +1,6 @@
 # Handoff — Nitapata? (Kilimo track, AI Mashinani)
 
-Last session: 2026-09-02. Repo: `~/Desktop/AI Mashinani/Kilimo` (git, branch `main`).
+Last session: 2026-09-02 (Day 0 complete). Repo: `~/Desktop/AI Mashinani/Kilimo` (git, branch `main`).
 
 ## What this is
 
@@ -22,20 +22,77 @@ prediction, insurance, credit.
 
 | Artefact | Status |
 |---|---|
-| `SPEC.md` | Written, committed — **Status: Draft, NOT yet approved** |
+| `SPEC.md` | **Approved** (2026-09-02, no changes) |
 | `index.html` | Team build hub (demo mock, pins, plan, collab steps) — done |
-| Build code | **None yet.** Factory rule: builder starts only on approved spec |
+| `wrangler.toml`, `pyproject.toml` | Scaffolded |
+| `corpus/sources.yaml` | 7 real sources registered, tiered, `wanted_not_found` gaps logged |
+| `corpus/raw/` | NCPB FAQ PDF + 5 government HTML pages snapshotted |
+| `corpus/chunks.jsonl` | 20 hand-cut chunks, verbatim from real documents, page/date/cycle/county tagged |
+| `demo/nitapata_demo.py` | Rules-based (no LLM yet) pipeline demo — runs clean, verified |
+| `evals/messages.yaml` + `test_outcomes.py` | 12/≥30 seeded cases, all passing |
+| Worker/ingestion build code | **None yet** — Day 1 |
 
-## The two pins — must be decided at Day 0, before build code
+## The two HACKATHON pins (brief, 11:00 wall) — DONE, in `docs/pins/`
 
-1. **Demo county**: Machakos (Nyambura persona) *iff* its published documents
-   answer all three questions (depot serves me? / what am I missing? / bag
-   price?); otherwise best-documented county (Kakamega is a candidate — has
-   a published KSh 2,000 price announcement) and rewrite the persona.
-2. **Citation hierarchy**: Ministry (kilimo.go.ke) + NCPB statements are
-   acceptable primary citations for figures; Gazette notice anchors the
-   programme's legal basis. Confirm during the document hunt and encode in
-   `corpus/sources.yaml`.
+1. **Who this helps, as a real role** — registered smallholder on the NFSP,
+   feature phone, about to walk to a collection point (persona Nafula, Malava,
+   Kakamega). `docs/pins/PIN-1-who-this-helps.md`
+2. **Risk level under Kenya's AI Bill 2026** — declared **high risk** by the
+   Bill's sector list (agriculture; Senate Bills No. 4 of 2026, Digest p.10),
+   built to the high-risk obligations. One page:
+   `docs/pins/PIN-2-ai-bill-2026-risk-sheet.md` (+ Parliament digest PDF).
+   The sijui rule ("I don't know" correctly beats a guess) = outcome 3 + the
+   citation check.
+
+**Spec is now v1.1** — merged from the original approved spec and the
+team-contract draft (both in `docs/archive/`). Outcome classes are exactly
+`cite | clarify | boundary`; the fallback line is a `boundary` with
+`guardrail_hits` recording why. Demo and evals aligned; 12/12 green.
+
+## The two Day-0 BUILD DECISIONS (spec §5A) — CLOSED 2026-09-02
+
+1. **Demo county: Kakamega, not Machakos.** Machakos has exactly one usable
+   document (KNA Machakos, 26/03/2025) — it names "four allocated depots"
+   with no names and **no price figure anywhere**. It fails the bag-price
+   question outright. Kakamega has a dated price trail (KSh 2,500 →
+   26/02/2026 → KSh 2,000 24/08/2026) plus a depot-count figure, and inherits
+   eligibility/process from the national NCPB FAQ. The demo persona must be
+   rewritten from Nyambura/Machakos to a Kakamega farmer (placeholder name
+   "Nafula" used in the demo script — rename freely).
+   Document-answerability table:
+   | Question | Kakamega | Machakos |
+   |---|---|---|
+   | Depot serves me? | Partial — 20 points exist, none named anywhere online | Partial — "four depots", none named |
+   | What am I missing? | Yes (NCPB FAQ) | Yes (same national FAQ) |
+   | Bag price this cycle? | **Yes, cited, dated** | **No document exists** |
+2. **Citation hierarchy: confirmed as specced.** Tier 1 = Ministry
+   (kilimo.go.ke) + NCPB (ncpb.co.ke). Tier 2 = county government sites.
+   Tier 3 = Kenya News Agency (kenyanews.go.ke) statements, used only when no
+   tier-1/2 document covers the fact (e.g. Machakos depot count). Media
+   (Star, Nation, Kenyans.co.ke) are discovery aids only — never citable.
+   Encoded in `corpus/sources.yaml`.
+   **Gap, not blocking but flagged for the pitch:** no Kenya Gazette notice
+   for the NFSP was locatable — gazettes.africa and new.kenyalaw.org search
+   returned nothing on 2026-09-02, and new.kenyalaw.org blocks fetches with a
+   403. The programme's "legal basis" claim currently has no Gazette anchor.
+   Retry with Gazette Vol/No browsing rather than free-text search, or drop
+   the legal-basis claim from the pitch if not found by Day 3.
+
+## Other document-hunt gaps (logged in `corpus/sources.yaml: wanted_not_found`)
+
+- No Machakos County Government document on the subsidy exists (checked
+  machakos.go.ke directly — nothing).
+- Kakamega's 20 collection points are never named anywhere online (only
+  counted: "16 county-managed + 4 NCPB").
+- No Ministry/NCPB primary statement for the Aug-2026 KSh 2,000 cut — only
+  the county government's restatement and media coverage of a presidential
+  church-service announcement (23/08/2026, Taita Taveta). If a kilimo.go.ke
+  or ncpb.co.ke statement surfaces, prefer it as the tier-1 citation instead.
+- KIAMIS's current 7-step e-voucher redemption flow has no primary-source
+  write-up found; the only detailed steps online are from a 2020 pilot-era
+  article (snapshotted as `kenyanews-evoucher-unveiled.html`, dated
+  2020-08-27 — pre-dates the current programme, do not cite as current
+  process without re-verifying against kiamislive.kalro.org).
 
 ## Architecture (agreed in spec)
 
@@ -59,21 +116,30 @@ outcome class; recorded-replay demo mode for dead venue Wi-Fi.
 - Known fact: price moved KSh 2,500 → 2,000 mid-programme → cycle tags +
   document dates on every chunk are mandatory.
 
-## Next session — in order
+## Next session — in order (Day 1)
 
-1. Get the spec **approved** (or amended) — flip `SPEC.md` Status to Approved.
-2. Day 0: scaffold (`wrangler.toml`, `requirements.txt`, `corpus/sources.yaml`),
-   run the document hunt, download + spot-check seed docs into `corpus/raw/`,
-   **decide both pins**, freeze the two interfaces (chunk metadata schema,
-   Worker message contract).
-3. Day 1: ingestion pipeline end-to-end; retrieval sanity check on the three
-   Nyambura questions; gate on `bge-m3` Kiswahili quality.
-4. Then Days 2–4 per SPEC.md build plan.
+1. Rewrite the demo persona from Nyambura/Machakos to a Kakamega farmer
+   (index.html team hub + demo script) to match the decided pin.
+2. Retry the Gazette search (Vol/No browsing on new.kenyalaw.org, not
+   free-text) — nice-to-have, not blocking.
+3. Build the real Python ingestion CLI (`nitapata ingest`) per SPEC.md
+   scope item 2, replacing the hand-cut `corpus/chunks.jsonl` with the real
+   pdfplumber/tesseract → chunk → embed pipeline against the sources already
+   registered in `corpus/sources.yaml`.
+4. Push chunks + metadata to Cloudflare Vectorize + D1 (need
+   `wrangler d1 create` / `wrangler vectorize create` — `wrangler.toml` has
+   placeholder IDs marked `REPLACE_AFTER_...`).
+5. Retrieval sanity check against the three Kakamega-persona questions.
+6. Gate on `bge-m3` Kiswahili/Sheng quality; hosted multilingual embedding
+   API is the fallback per SPEC.md open question 4.
+7. Then Days 2–4 per SPEC.md build plan (Worker pipeline replaces
+   `demo/nitapata_demo.py`'s templated generation with real Haiku calls;
+   grow `evals/messages.yaml` from 12 to ≥30 cases).
 
 ## Kickoff prompt for next session
 
 > Continue the Nitapata? build in ~/Desktop/AI Mashinani/Kilimo. Read
-> HANDOFF.md and SPEC.md first. I approve the spec [/ with these changes: …].
-> Start Day 0: scaffold, run the document hunt, decide the two pins (demo
-> county + citation hierarchy), and report what the documents can actually
-> answer before moving to Day 1.
+> HANDOFF.md and SPEC.md first — spec is approved, both pins are decided
+> (Kakamega demo county, tiered citation hierarchy). Start Day 1: build the
+> real ingestion CLI against corpus/sources.yaml, push to Vectorize + D1,
+> and run the retrieval sanity check on the three Kakamega-persona questions.
