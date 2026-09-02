@@ -217,3 +217,23 @@ a shortcode is the one thing that can't be automated).
 
 Known limits, stated: Kiswahili replies are templated (Haiku off without a key);
 Machakos has no price document so that fallback is real; no Gazette located.
+
+## Two answer engines now exist — decide before Day 3 wiring (merged 2026-09-02)
+
+A teammate pushed `app/rag/` (commit `1615d04`, "impl: RAG system", `docs/RAG.md`):
+SQLite FTS5 + dense retrieval, Claude structured outputs, its own guardrails,
+API-key-protected router at `/v1/rag/*`, 64 tests. It is **stateless** by design;
+its doc says segmentation, keywords and the 15-minute state are the channel
+layer's job. That channel layer is exactly what `nitapata/` provides, plus its
+own (lexical) retrieval and generation.
+
+Current wiring (`app/main.py`): the SMS webhook and judge panel use
+`nitapata.pipeline`; `/v1/rag/*` is mounted alongside, imported defensively so
+the webhook never depends on the RAG's deps or config. Combined suite: **121
+tests green** (`NITAPATA_USE_LLM=0 DRY_RUN=1 python3 -m pytest -q`).
+
+**Recommended next step:** make `nitapata.pipeline` call `app.rag.pipeline`
+for steps 5–7 (retrieve, generate, citation check) when `RAG_API_KEYS`/deps are
+configured, keeping nitapata's keywords, state, template and GSM-7 on top. Then
+retire `nitapata/retrieve.py` + `generate.py` templates or keep them as the
+offline fallback. This is a team decision (Lane A/B owners), not a solo change.

@@ -41,9 +41,9 @@ from pydantic import BaseModel, Field
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from nitapata import constants  # noqa: E402
-from nitapata.pipeline import handle  # noqa: E402
-from nitapata.retrieve import index  # noqa: E402
+from nitapata import constants
+from nitapata.pipeline import handle
+from nitapata.retrieve import index
 
 log = logging.getLogger("nitapata")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
