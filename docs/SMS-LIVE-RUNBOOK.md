@@ -51,18 +51,34 @@ acceptance path in SPEC.md §14 criterion 12.
 
 ## 6. Real handset (only if you want live-on-stage)
 
-A real phone needs a **live** account with an approved sender ID or shortcode.
-- **Alphanumeric sender ID**: request under Live app → SMS → Sender IDs. Approval
-  takes hours to days. Sender IDs can *send* to handsets but **cannot receive**
-  replies, so for a two-way thread you need a shortcode.
-- **Shortcode**: dedicated ones are slow and paid; ask Africa's Talking support
-  for a **shared shortcode + keyword** for the hackathon — that is the realistic
-  same-week path.
-- Once approved: set `AT_USERNAME=<live username>`, `AT_API_KEY=<live key>`,
-  `AT_SENDER_ID=<code>`, set the live app's incoming callback to the tunnel URL,
-  restart `scripts/run_sms.sh`.
-If none of that lands before the demo, present on the simulator and **say so**
-— SPEC.md §14 criterion 12 makes the honest statement part of done.
+A real phone needs a **live** account with something that can *receive*.
+`AFTKNG` (or any approved alphanumeric sender ID) is **send-only** by design.
+Telecoms have no route for a reply to an alphanumeric name, so a farmer
+texting back to it never reaches Africa's Talking, and `/sms/inbound` never
+fires. Confirmed against Africa's Talking's own docs: shortcodes can send
+and receive, alphanumerics can only send.
+
+1. **Check the dashboard first.** Live app → **SMS → Sender IDs /
+   Shortcodes**. If a shortcode is already listed alongside `AFTKNG`, skip
+   to step 3, you already have what you need.
+2. **If there is no shortcode yet, request one.** Dedicated shortcodes are
+   slow and paid; ask Africa's Talking support for a **shared shortcode +
+   keyword** instead, the realistic same-week path for a hackathon.
+3. **Wire it up:**
+   ```bash
+   # .env
+   AT_USERNAME=<live username>
+   AT_API_KEY=<live key>
+   AT_SENDER_ID=AFTKNG
+   ```
+   Live app → **SMS → Callback URLs → Incoming Messages** → paste the tunnel
+   URL + `/sms/inbound` → Save. Restart `scripts/run_sms.sh`.
+4. A farmer texts the **shortcode** (not `AFTKNG`, that never appears as a
+   destination). The reply they see back is sent *from* `AFTKNG`, since
+   that's what `AT_SENDER_ID` sets on outbound.
+
+If a shortcode does not land before the demo, present on the simulator and
+**say so**. SPEC.md §14 criterion 12 makes the honest statement part of done.
 
 ## 7. Before walking on stage
 
@@ -71,9 +87,26 @@ If none of that lands before the demo, present on the simulator and **say so**
 - Recorded fallback ready: `python3 demo/nitapata_demo.py` runs offline.
 - Have `docs/pins/PIN-2-ai-bill-2026-risk-sheet.md` open for the "high risk?" question.
 
-## What is still Day 1–3 engineering (not manual)
+## What is still engineering, not manual
 
-The pipeline behind the webhook is the rules-based stand-in. Haiku generation,
-Vectorize retrieval, the Astro judge panel and the ≥40 eval cases are the build
-plan in SPEC.md §11 — the webhook keeps the same `/sms/inbound` contract when
-they land.
+Cloudflare Vectorize/D1 and the TypeScript Worker are the production target
+(SPEC §9). They need `wrangler login`, so they are not built; the Python
+pipeline in `nitapata/` is the working demo and keeps the same `/sms/inbound`
+contract.
+
+## 8. Judge panel and the recorded fallback (added with the working demo)
+
+- `scripts/run_sms.sh` builds the corpus and the recorded run on first start,
+  then open **http://localhost:8000/judge**. Left: phone thread. Right: outcome,
+  citations with page and date, every retrieved chunk (used ones highlighted),
+  guardrail hits, declared state. Scripted prompt buttons are under the input.
+- **Seed a bad figure** injects a wrong price into a draft so the audience sees
+  the citation check discard it and the fallback line go out instead.
+- **Play recorded run** switches to the transcript in `web/recorded_run.json`
+  (regenerate with `python3 evals/record_run.py`). It is labelled RECORDED RUN
+  on screen; never present it as live.
+- Optional: export `ANTHROPIC_API_KEY` to turn on Claude Haiku classification
+  and generation (`/health` then reports `"llm": "claude-haiku-4-5"`). The
+  citation check still runs on every draft; on any API error the templated
+  path answers instead. Test it once before the demo, it has not been
+  exercised live on the build machine.

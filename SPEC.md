@@ -564,8 +564,8 @@ model to find something quotable for an out-of-scope question.
 
 ### 9.3 LLM usage
 
-- **Model:** Claude Haiku 4.5, ID **`claude-haiku-4-5-20251001`** (the dated ID is
-  the published one; the draft's undated form is not guaranteed to resolve).
+- **Model:** Claude Haiku 4.5, ID **`claude-haiku-4-5`** (undated, per the current
+  Anthropic model table; v1.1 wrongly said a dated suffix was required).
   Pinned in config, not at call sites.
 - **Classification** uses structured output with a closed enum for `intent`,
   `in_scope` and `DeclaredFlag` extraction; `max_tokens` ~256. Few-shot Sheng
@@ -756,9 +756,9 @@ Each day ends on a **gate**, not a feeling.
 | Day | Deliverable | Gate | Status |
 |---|---|---|---|
 | **0 · ½** | Scaffold + document hunt; pins; rules-based demo stand-in. **Request the Africa's Talking sender ID / shortcode today** — provisioning has lead time. | Both pins on the wall, both decisions closed, interfaces frozen, ≥5 documents snapshotted, §7.5 checklist filled with locators or `NOT FOUND`, demo replay + guardrail proof runnable | **Done 2026-09-02** except the AT sender request — **open, do first on Day 1** |
-| **1** | Ingestion end-to-end → Vectorize/D1; persona rewrite to Kakamega; hunt a KIAMIS/NCPB redemption-steps page (§7.5 row 5) | `nitapata verify` returns right document/locator/date for the §6 questions. **Embedding gate:** if `bge-m3` fumbles Kiswahili, first try translate-before-retrieve (sw→en query via the classification call, retrieve against English chunks, reply in Kiswahili) — a step-5 change; only if that fails, swap to a hosted multilingual API | |
-| **2** | Worker pipeline + eval harness together, incl. requirements/gap composition, KV declared state | ≥40 cases green, **zero uncited figures, zero invented requirements** | |
-| **3** | Africa's Talking sandbox; Astro demo UI + judge panel; keyword commands; frozen template renderer; GSM-7 | §6 threads complete **in the AT simulator**, and on a handset if the sender ID landed; panel shows chunk/doc/locator/date incl. per-requirement chunks | |
+| **1** | Ingestion end-to-end → Vectorize/D1; persona rewrite to Kakamega; hunt a KIAMIS/NCPB redemption-steps page (§7.5 row 5) | `nitapata verify` returns right document/locator/date for the §6 questions. **Embedding gate:** if `bge-m3` fumbles Kiswahili, first try translate-before-retrieve (sw→en query via the classification call, retrieve against English chunks, reply in Kiswahili) — a step-5 change; only if that fails, swap to a hosted multilingual API | **Ingestion + local lexical retrieval done** (`ingest/`, `nitapata/retrieve.py`, `verify` passes). Vectorize/D1 deferred: needs Cloudflare auth. Redemption-steps page still not found. |
+| **2** | Worker pipeline + eval harness together, incl. requirements/gap composition, KV declared state | ≥40 cases green, **zero uncited figures, zero invented requirements** | **Done in Python** (`nitapata/`, 47 eval cases + 10 webhook tests green). Haiku path key-gated and untested live. TS Worker not built. |
+| **3** | Africa's Talking sandbox; Astro demo UI + judge panel; keyword commands; frozen template renderer; GSM-7 | §6 threads complete **in the AT simulator**, and on a handset if the sender ID landed; panel shows chunk/doc/locator/date incl. per-requirement chunks | Webhook, keywords, template, GSM-7 and judge panel (`web/judge.html`, static not Astro) **done**. AT simulator run is a manual step (runbook). |
 | **4 · ½** | Red-team, recorded replay, `reviewer`, pitch dry-run | Adversarial suite green; "which document, which page?" answered in <30 s | |
 
 ### 11.1 Stack

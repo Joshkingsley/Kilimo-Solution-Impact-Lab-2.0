@@ -196,3 +196,24 @@ factored into `styles.css`, linked by both pages, no duplication drift.
 
 Zero em/en-dashes anywhere (mechanically verified). Both pages parse clean
 with Python's `html.parser` and serve 200 over a local static server.
+
+## Working demo (without the shortcode) — built 2026-09-02, later session
+
+Everything behind the webhook is now real code, not the Day-0 stand-in:
+
+| Piece | Where | State |
+|---|---|---|
+| Ingestion CLI | `ingest/` (`python3 -m ingest.cli fetch|parse|ingest|verify|stats`) | Parses the 8 snapshots into 60 Interface-A chunks with locators (PDF Q&A blocks, HTML paragraphs, curated override for the KIAMIS portal). sha256 verified against `sources.yaml`. |
+| Pipeline package | `nitapata/` (intents, state, retrieve, generate, guardrails, render, pipeline) | Steps 1–8 of SPEC §9.2 incl. clause-level scope gate, declared state + gap, requirements component, frozen template + trim order, GSM-7 segmentation, keyword commands EN/SW/MSAADA/HELP/STOP. |
+| Retrieval | `nitapata/retrieve.py` (LocalIndex) | Lexical index with intent/county/cycle filters, authority rerank, newest-wins, FAQ anchor chunks. **Vectorize/D1 + the TS Worker are NOT built**: they need `wrangler login` (manual) and the Python path is the working demo. Same record shape, swap later. |
+| Claude Haiku | `nitapata/generate.py`, `nitapata/intents.py` | Structured-output classification + cite-or-refuse generation, `claude-haiku-4-5`, prompt-cached system block, key-gated by `ANTHROPIC_API_KEY`. **Untested live** (no key on the build machine); every path falls back to templates on any API error and the deterministic citation check runs regardless. |
+| Judge panel | `web/judge.html` served at `/judge`; `/replay` serves `web/recorded_run.json` | Phone thread + outcome, citations, retrieved chunks (used/unused), guardrail hits, declared state; "Seed a bad figure" button; labelled recorded-run mode. Plain static HTML, not Astro (deliberate: zero build step). |
+| Evals | `evals/messages.yaml` (47 cases), `evals/test_outcomes.py`, `tests/test_webhook.py` | 57 tests green on the templated path (`NITAPATA_USE_LLM=0`). Covers all six intents, stale-price traps, injection, personal-record lookup, clarify-once, keywords, contradiction-latest-wins, budget. |
+| Webhook | `app/main.py` | `/sms/inbound` → pipeline → Africa's Talking (or DRY_RUN); `/demo/message`; `/health`. |
+
+Run it: `scripts/run_sms.sh` then open http://localhost:8000/judge. Manual steps for a
+phone are still in `docs/SMS-LIVE-RUNBOOK.md` (sandbox key, tunnel, callback URL;
+a shortcode is the one thing that can't be automated).
+
+Known limits, stated: Kiswahili replies are templated (Haiku off without a key);
+Machakos has no price document so that fallback is real; no Gazette located.

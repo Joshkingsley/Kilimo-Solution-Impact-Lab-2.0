@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nitapata?, the build hub · Kilimo track, AI Mashinani</title>
-<meta name="description" content="Nitapata? answers fertiliser subsidy eligibility, process and price questions over SMS, every figure cited to a public document and page. The two hackathon pins: who this helps, and the AI Bill 2026 risk sheet.">
+<title>Nitapata?, the 5-minute pitch · Kilimo track, AI Mashinani</title>
+<meta name="description" content="Nitapata? answers fertiliser subsidy eligibility, process and price questions over SMS, every figure cited to a public document and page. Seven slides: the farmer, the contract, the demo, the risk sheet, how it works.">
 <meta property="og:title" content="Nitapata?, a citation-locked subsidy assistant">
 <meta property="og:description" content="A cited answer, one clarifying question, or a stated boundary. Never a fourth option.">
 <meta property="og:type" content="website">
@@ -12,255 +12,335 @@
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Nitapata?, team build hub",
+  "name": "Nitapata?, pitch deck",
   "description": "Citation-locked SMS assistant for Kenya's National Fertiliser Subsidy Programme. Kilimo track, AI Mashinani hackathon.",
   "datePublished": "2026-09-02",
   "inLanguage": ["en", "sw"]
 }
 </script>
-<link rel="stylesheet" href="styles.css">
+<style>
+/* A slide deck in one file. White paper, near-black type, one green.
+   Each <section class="slide"> is one idea and fills the viewport.
+   Arrow keys, space and PageUp/PageDown move between slides. Mono is
+   reserved for anything verifiable against a document (citations,
+   dates, rule numbers). Amber and clay exist only for the outcome
+   system (clarify / boundary / high-risk), never as decoration. */
+:root{
+  --ink:#0b0f0c; --ink-soft:#5a635d; --paper:#ffffff; --line:#e6e6e2;
+  --accent:#15803d; --accent-soft:#eaf7ee;
+  --amber:#8a5a12; --amber-soft:#f7ecd8; --clay:#8c3a2e; --clay-soft:#f6e5e1;
+  --mono:ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;
+  --sans:-apple-system,'Segoe UI',system-ui,Roboto,sans-serif;
+  --pad:clamp(1.25rem,5vw,4rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-snap-type:y proximity}
+@media (prefers-reduced-motion:no-preference){ html{scroll-behavior:smooth} }
+@media (min-width:900px){ html{scroll-snap-type:y mandatory} }
+body{background:var(--paper);color:var(--ink);font:17px/1.55 var(--sans);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+h1,h2,h3{line-height:1.05;letter-spacing:-0.02em;font-weight:700}
+p{max-width:62ch}
+code{font:.9em var(--mono);background:var(--accent-soft);color:var(--accent);border-radius:.3rem;padding:.08em .35em}
+.skip-link{position:absolute;top:-3rem;left:1rem;background:var(--ink);color:#fff;padding:.5rem .9rem;border-radius:.4rem;font-size:.85rem;z-index:50}
+.skip-link:focus{top:1rem}
+
+/* progress + counter */
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:40;transition:width .2s ease}
+.counter{position:fixed;right:1.1rem;bottom:1rem;font:600 .78rem/1 var(--mono);color:var(--ink-soft);z-index:40;background:rgba(255,255,255,.85);padding:.35rem .6rem;border-radius:999px;border:1px solid var(--line)}
+.deckbar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:.9rem var(--pad);z-index:30;pointer-events:none}
+.deckbar .brand{font:700 1rem/1 var(--sans);color:var(--ink);pointer-events:auto}
+.deckbar .brand span{color:var(--accent)}
+.deckbar a.spec{pointer-events:auto;font:600 .78rem/1 var(--mono);border:1px solid var(--line);border-radius:999px;padding:.4rem .8rem;text-decoration:none;color:var(--ink);background:#fff}
+
+/* slides */
+.slide{min-height:100dvh;scroll-snap-align:start;display:grid;align-content:center;padding:calc(var(--pad) + 2.5rem) var(--pad) var(--pad);position:relative}
+.slide .inner{width:100%;max-width:1160px;margin:0 auto}
+.tag{display:inline-block;font:700 .7rem/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:.4rem .75rem;margin-bottom:1.4rem}
+.tag.clay{color:var(--clay);background:var(--clay-soft)}
+.display{font-size:clamp(2.2rem,6vw,4.6rem);max-width:16ch}
+.display em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(1.05rem,1.6vw,1.3rem);color:var(--ink-soft);margin-top:1.4rem}
+.meta{font:600 .8rem/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft)}
+
+/* slide 1 */
+.title-grid{display:grid;gap:2.5rem;align-items:end}
+.title-grid .big{font-size:clamp(3.4rem,11vw,8.5rem);letter-spacing:-0.04em;line-height:.95}
+.title-grid .big span{color:var(--accent)}
+@media(min-width:900px){ .title-grid{grid-template-columns:1.1fr 1fr} }
+
+/* slide 2: Nafula */
+.q-grid{display:grid;gap:1.2rem;margin-top:2.4rem}
+.q{border-top:2px solid var(--ink);padding-top:1rem}
+.q .sw{font-size:clamp(1.25rem,2.2vw,1.7rem);font-weight:700;line-height:1.2}
+.q .gloss{color:var(--accent);font:600 .85rem/1.4 var(--mono);margin-top:.5rem}
+.q .why{color:var(--ink-soft);font-size:.95rem;margin-top:.6rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.6rem}
+.chip{font-size:.82rem;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;padding:.35rem .75rem}
+@media(min-width:900px){ .q-grid{grid-template-columns:repeat(3,1fr);gap:2rem} }
+
+/* slide 3: contract */
+.outcomes{display:grid;gap:1.4rem;margin-top:2.4rem}
+.outcome{border-top:2px solid var(--line);padding-top:1.2rem}
+.outcome .k{font:800 .8rem/1 var(--mono);text-transform:uppercase;letter-spacing:.14em;padding:.45rem .7rem;border-radius:.35rem;display:inline-block}
+.outcome.cite .k{background:var(--accent-soft);color:var(--accent)}
+.outcome.clarify .k{background:var(--amber-soft);color:var(--amber)}
+.outcome.boundary .k{background:var(--clay-soft);color:var(--clay)}
+.outcome h3{font-size:clamp(1.4rem,2.6vw,2rem);margin-top:1rem}
+.outcome p{color:var(--ink-soft);margin-top:.6rem;font-size:.98rem}
+.never{margin-top:2.4rem;font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:700}
+.never span{color:var(--clay)}
+@media(min-width:900px){ .outcomes{grid-template-columns:repeat(3,1fr);gap:2.5rem} }
+
+/* slide 4: demo */
+.demo-grid{display:grid;gap:2rem;margin-top:1.6rem;align-items:start}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:.5rem 1rem;font:600 .85rem/1 var(--sans);color:var(--ink-soft);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.phone{background:#101613;border-radius:1.5rem;padding:1rem .85rem 1.1rem;max-width:360px;width:100%;box-shadow:0 18px 40px rgba(11,15,12,.14)}
+.phone .status{color:#8ba394;font:600 .66rem/1 var(--mono);display:flex;justify-content:space-between;padding:.1rem .4rem .7rem}
+.thread{display:flex;flex-direction:column;gap:.5rem;min-height:260px}
+.msg{max-width:88%;padding:.6rem .8rem;border-radius:.9rem;font-size:.86rem;line-height:1.45}
+.msg.in{align-self:flex-end;background:#2e6e4c;color:#f2f7f3;border-bottom-right-radius:.25rem}
+.msg.out{align-self:flex-start;background:#1d2622;color:#dfe7e1;border-bottom-left-radius:.25rem;border:1px solid #2a352f}
+.msg .cite{display:block;margin-top:.4rem;font:600 .7rem/1.4 var(--mono);color:#8fd0a8}
+.msg .decline{display:block;margin-top:.3rem;color:#e0b06a;font-size:.78rem}
+.otag{align-self:flex-start;font:700 .62rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;padding:.25rem .5rem;border-radius:.3rem}
+.otag.cite{background:#173526;color:#8fd0a8}
+.otag.clarify{background:#3a2f14;color:#e0b06a}
+.otag.boundary{background:#3a1f19;color:#e59a8a}
+.demo-side h3{font-size:clamp(1.3rem,2.4vw,1.9rem)}
+.demo-side p{color:var(--ink-soft);margin-top:1rem}
+.demo-side .fact{margin-top:1.6rem;border-left:3px solid var(--accent);padding-left:1rem;font-size:1rem;color:var(--ink)}
+@media(min-width:900px){ .demo-grid{grid-template-columns:auto 1fr;gap:3.5rem} }
+
+/* slide 5: risk */
+.risk-big{font:800 clamp(3rem,9vw,7rem)/1 var(--mono);letter-spacing:-0.03em;color:var(--clay)}
+.risk-src{margin-top:1.2rem;color:var(--ink-soft);font-size:1.02rem}
+.oblig{display:grid;gap:.6rem;margin-top:2rem}
+.ob{display:flex;align-items:center;gap:.7rem;font-size:.95rem;border:1px solid var(--line);border-radius:.6rem;padding:.6rem .8rem;background:#fff}
+.ob .ck{width:1.35rem;height:1.35rem;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:800 .82rem/1.35rem var(--sans);text-align:center;flex:none}
+.residual{margin-top:1.4rem;color:var(--ink-soft);font-size:.92rem}
+@media(min-width:700px){ .oblig{grid-template-columns:1fr 1fr} }
+@media(min-width:1000px){ .risk-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:3.5rem;align-items:start} .oblig{margin-top:0} }
+
+/* slide 6: how */
+.rules{display:grid;gap:.7rem;margin-top:1.8rem}
+.rule{display:flex;gap:.9rem;align-items:baseline;border-top:2px solid var(--ink);padding-top:.8rem}
+.rule b{font:800 1.3rem/1 var(--mono);color:var(--accent)}
+.rule span{font-size:1.02rem;font-weight:600}
+.flow{background:#101613;color:#cfe0d4;border-radius:.8rem;padding:1rem 1.1rem;overflow-x:auto;font:.72rem/1.65 var(--mono);white-space:pre;margin-top:1.8rem}
+.stack{margin-top:1.2rem;color:var(--ink-soft);font-size:.95rem}
+@media(min-width:900px){ .rules{grid-template-columns:repeat(4,1fr);gap:1.6rem} }
+
+/* slide 7: close */
+.quote{margin-top:2.2rem;border-left:3px solid var(--accent);padding-left:1.1rem;font-size:clamp(1.1rem,1.8vw,1.4rem);font-style:italic;max-width:40ch}
+.quote small{display:block;font-style:normal;color:var(--ink-soft);font-size:.82rem;margin-top:.5rem}
+.links{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:2.4rem}
+.links a{font:600 .85rem/1 var(--mono);text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:.55rem .95rem}
+.links a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+
+@media print{
+  .progress,.counter,.deckbar{display:none}
+  .slide{min-height:auto;page-break-after:always;padding:2rem}
+  .thread[hidden]{display:flex}
+}
+</style>
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link" href="#s1">Skip to content</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="deckbar">
+  <span class="brand">Nitapata<span>?</span></span>
+  <a class="spec" href="SPEC.md">Read the spec</a>
+</div>
+<div class="counter" id="counter" aria-live="polite">1 / 7</div>
 
-<header class="topbar">
-  <div class="wrap">
-    <span class="brand">Nitapata<span>?</span></span>
-    <nav class="topnav" aria-label="Page sections">
-      <a href="pins.html">Pins</a>
-      <a href="#demo">Demo</a>
-      <a href="#architecture">Architecture</a>
-      <a href="#sources">Sources</a>
-      <a href="#plan">Plan</a>
-    </nav>
-    <a class="specref" href="SPEC.md">Read the spec</a>
+<main>
+
+<!-- 1 · Title -->
+<section class="slide" id="s1">
+  <div class="inner title-grid">
+    <div>
+      <p class="meta">AI Mashinani &middot; Kilimo track</p>
+      <h1 class="big" style="margin-top:1rem">Nitapata<span>?</span></h1>
+    </div>
+    <div>
+      <h2 class="display" style="font-size:clamp(1.6rem,3.2vw,2.4rem);max-width:20ch">Every figure names its document and page.</h2>
+      <p class="lede">An SMS assistant for farmers on Kenya's fertiliser subsidy programme. Eligibility, process and price. Never agronomy, never a guess.</p>
+    </div>
   </div>
-</header>
+</section>
 
-<main id="main">
-
-  <section class="hero wrap">
-    <div class="hero-grid">
-      <div>
-        <p class="brandline">AI Mashinani · Kilimo track · team build hub</p>
-        <h1>Every figure names its document and page.</h1>
-        <p class="lede">An SMS assistant for farmers on Kenya's fertiliser subsidy programme. It answers eligibility, process and price. Never agronomy, never a guess.</p>
-        <div class="hero-ctas">
-          <a class="btn" href="#pins">See the two pins</a>
-          <a class="textlink" href="SPEC.md">Read the spec</a>
-        </div>
+<!-- 2 · Pin 1 -->
+<section class="slide" id="s2">
+  <div class="inner">
+    <span class="tag">Pin 1 &middot; Who this helps</span>
+    <h2 class="display">She loses a <em>day's work</em> if the trip is wasted.</h2>
+    <p class="lede">Nafula, Malava ward, Kakamega. A registered smallholder on a feature phone, about to walk to a collection point with three questions nobody can answer her.</p>
+    <div class="q-grid">
+      <div class="q">
+        <p class="sw" lang="sw">"Depo hii inanihudumia?"</p>
+        <p class="gloss">Does this point serve me</p>
+        <p class="why">The answer sits on a county website she will never open on a feature phone.</p>
       </div>
-      <div class="contract reveal">
-        <div class="contract-row">
-          <span class="otag cite">Cite</span>
-          <p></p>
-          <p>A figure, plus <code>[Document, Page, Date]</code> drawn from the corpus.</p>
-        </div>
-        <div class="contract-row">
-          <span class="otag clarify">Clarify</span>
-          <p></p>
-          <p>One question, asked once. "Which ward or depot is nearest?"</p>
-        </div>
-        <div class="contract-row">
-          <span class="otag boundary">Boundary</span>
-          <p></p>
-          <p>A fixed line, no hedging. Never a fourth option.</p>
-        </div>
+      <div class="q">
+        <p class="sw" lang="sw">"Nimekosa nini?"</p>
+        <p class="gloss">What do I still lack</p>
+        <p class="why">It is in a PDF. Word of mouth at the market contradicts itself.</p>
+      </div>
+      <div class="q">
+        <p class="sw" lang="sw">"Mfuko ni bei gani msimu huu?"</p>
+        <p class="gloss">What does the bag cost this cycle</p>
+        <p class="why">It moved from KSh 2,500 to KSh 2,000 mid-programme. Last season's answer is now wrong.</p>
       </div>
     </div>
-  </section>
+    <div class="chips">
+      <span class="chip">Feature phone, no data bundle</span>
+      <span class="chip">Registered on KIAMIS via the ward office</span>
+      <span class="chip">Under two acres, maize and beans</span>
+      <span class="chip">Kiswahili first, Luhya at home, some Sheng</span>
+    </div>
+  </div>
+</section>
 
-  <!-- ============ PINS ============ -->
-  <section id="pins" class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow">The two pins</p>
-      <h2>Pinned before a single line of build code</h2>
-      <p>The brief asks every team to name who this helps and how risky it is under Kenya's proposed AI law. No sheet, no build. Full write-ups live on their own page.</p>
+<!-- 3 · Contract -->
+<section class="slide" id="s3">
+  <div class="inner">
+    <span class="tag">The contract</span>
+    <h2 class="display">Three outcomes.</h2>
+    <div class="outcomes">
+      <div class="outcome cite">
+        <span class="k">Cite</span>
+        <h3>A figure, plus its source.</h3>
+        <p><code>[Document, Page, Date]</code>, drawn from the retrieved chunk. If the number is not in the document, the reply is discarded.</p>
+      </div>
+      <div class="outcome clarify">
+        <span class="k">Clarify</span>
+        <h3>One question, asked once.</h3>
+        <p>"Which county?" Held for fifteen minutes under a hashed key, then wiped. Never a second question.</p>
+      </div>
+      <div class="outcome boundary">
+        <span class="k">Boundary</span>
+        <h3>A fixed line, no hedging.</h3>
+        <p>Out of scope, or not in the public documents. The same sentence every time, pointing to the ward office.</p>
+      </div>
     </div>
-    <div class="pins-grid">
-      <a class="pin role reveal pin-teaser" href="pins.html">
-        <span class="pintag">Pin 1 &middot; Who this helps</span>
-        <h3>Nafula, Malava ward, Kakamega County</h3>
-        <p>A registered smallholder on a feature phone, about to walk to a collection point. She is not a user. She is someone who loses a day's work if the trip is wasted.</p>
-        <span class="teaser-cta">Read the full pin &rarr;</span>
-      </a>
-      <a class="pin risk reveal pin-teaser" href="pins.html">
-        <span class="pintag">Pin 2 &middot; Risk under Kenya's AI Bill 2026</span>
-        <div class="risk-stamp" style="margin-bottom:.4rem">
-          <b>HIGH RISK</b>
-          <p>Agriculture is named a high-risk sector in the Bill's own digest. We build to the high-risk obligations, not around them.</p>
-        </div>
-        <span class="teaser-cta">Read the obligations met &rarr;</span>
-      </a>
-    </div>
-  </section>
+    <p class="never">Never a <span>fourth</span> option.</p>
+  </div>
+</section>
 
-  <!-- ============ DEMO ============ -->
-  <section id="demo" class="wrap">
-    <div class="section-head reveal">
-      <h2>See it answer, and see it refuse</h2>
-      <p>The same pipeline behind every thread below. A judge panel beside the live demo shows the retrieved chunk, document, page and date behind each cited answer.</p>
-    </div>
-    <div class="demo-layout">
+<!-- 4 · Demo -->
+<section class="slide" id="s4">
+  <div class="inner">
+    <span class="tag">Live</span>
+    <div class="demo-grid">
       <div>
         <div class="tabs" role="tablist" aria-label="Demo conversations">
-          <button role="tab" aria-selected="true" aria-controls="t1" data-thread="t1">Nafula asks the price</button>
-          <button role="tab" aria-selected="false" aria-controls="t2" data-thread="t2">The boundary</button>
-          <button role="tab" aria-selected="false" aria-controls="t3" data-thread="t3">Machakos, the honest limit</button>
+          <button role="tab" aria-selected="true" aria-controls="t1" data-thread="t1">Price</button>
+          <button role="tab" aria-selected="false" aria-controls="t2" data-thread="t2">Boundary</button>
+          <button role="tab" aria-selected="false" aria-controls="t3" data-thread="t3">Honest limit</button>
         </div>
         <div class="phone">
-          <div class="status"><span>Safaricom · SMS</span><span>Nitapata sandbox</span></div>
-
+          <div class="status"><span>Safaricom &middot; SMS</span><span>Nitapata</span></div>
           <div class="thread" id="t1" role="tabpanel">
             <div class="msg in" lang="sw">Bei ya mbolea msimu huu ni ngapi?</div>
-            <span class="otag-mini clarify">clarify</span>
+            <span class="otag clarify">clarify</span>
             <div class="msg out" lang="sw">Uko kaunti gani? Bei hutegemea kaunti.</div>
             <div class="msg in" lang="sw">Kakamega</div>
-            <span class="otag-mini cite">cite</span>
-            <div class="msg out" lang="sw">Mfuko wa 50kg wa mbolea ya ruzuku ni KSh 2,000 msimu huu.<span class="cite">[Kaunti ya Kakamega, ¶2, 24 Aug 2026]</span></div>
-            <div class="msg in" lang="sw">Nahitaji nini ili nipate mbolea ya ruzuku?</div>
-            <span class="otag-mini cite">cite</span>
-            <div class="msg out" lang="sw">Unahitaji: kusajiliwa, kitambulisho asili, kufika mwenyewe.<span class="cite">[NCPB FAQ, Uk.1 Q3, Oct 2022]</span></div>
+            <span class="otag cite">cite</span>
+            <div class="msg out" lang="sw">Mfuko wa 50kg wa mbolea ya ruzuku ni KSh 2,000 msimu huu.<span class="cite">[Kaunti ya Kakamega, &sect;2, 24 Aug 2026]</span></div>
           </div>
-
           <div class="thread" id="t2" role="tabpanel" hidden>
             <div class="msg in" lang="sw">mahindi yangu inakauka nifanye nini? na pia naweza pata loan ya mbegu?</div>
-            <span class="otag-mini boundary">boundary</span>
+            <span class="otag boundary">boundary</span>
             <div class="msg out" lang="sw">Nitapata? hujibu tu maswali ya sifa, utaratibu na bei ya mbolea ya ruzuku. Hilo liko nje ya wigo wetu.<span class="decline">Same wording every time. No hedging.</span></div>
           </div>
-
           <div class="thread" id="t3" role="tabpanel" hidden>
             <div class="msg in" lang="sw">Kangundo depot Machakos inanihudumia?</div>
-            <span class="otag-mini cite">cite, with a decline</span>
-            <div class="msg out" lang="sw">Machakos ina depo nne zilizotengwa za NCPB.<span class="cite">[KNA Machakos, ¶1, 26 Mar 2025]</span><span class="decline">Kama Kangundo ni moja yazo, hilo si kwenye hati za umma.</span></div>
+            <span class="otag cite">cite, with a decline</span>
+            <div class="msg out" lang="sw">Machakos ina depo nne zilizotengwa za NCPB.<span class="cite">[KNA Machakos, &sect;1, 26 Mar 2025]</span><span class="decline">Kama Kangundo ni moja yazo, hilo si kwenye hati za umma.</span></div>
             <div class="msg in" lang="sw">Bei Machakos ni ngapi?</div>
-            <span class="otag-mini boundary">boundary</span>
+            <span class="otag boundary">boundary</span>
             <div class="msg out" lang="sw">Samahani, hili si kwenye hati za umma tulizo nazo. Uliza ofisi ya kilimo ya wodi yako.</div>
           </div>
         </div>
       </div>
-      <p class="demo-note reveal">Machakos was the original demo county. Its only public document names four depots with no bag price anywhere, so the price question there is a real fallback, not a scripted one. That gap is why the demo county moved to Kakamega, a Day-0 build decision recorded in <code>SPEC.md</code>, separate from the two pins above.</p>
-    </div>
-  </section>
-
-  <!-- ============ RULES ============ -->
-  <section id="rules" class="wrap">
-    <div class="section-head reveal">
-      <h2>Four rules that do not move</h2>
-    </div>
-    <div class="rulelist reveal">
-      <div class="rule"><span class="num">1</span><div><b>No agronomic advice.</b><span>Eligibility and process, never what or when to plant, never what will happen to a crop.</span></div></div>
-      <div class="rule"><span class="num">2</span><div><b>Not a marketplace.</b><span>No buying, selling, payments, credit or insurance, not even steering towards one.</span></div></div>
-      <div class="rule"><span class="num">3</span><div><b>An uncited figure is a failed guardrail.</b><span>A draft with an uncited number is discarded and replaced with the fallback line.</span></div></div>
-      <div class="rule"><span class="num">4</span><div><b>No farmer database.</b><span>No accounts, no history. The only persistent store is the public-document corpus.</span></div></div>
-    </div>
-    <div class="banner reveal">
-      <h3>Rejected in ideation, do not resurrect</h3>
-      <p>Satellite risk-of-loss scoring, yield or days-to-reap prediction, insurance, credit. Each one fails the citation test unconditionally, a model score has no gazette page behind it. They are a different product with a different risk classification, not a stretch goal of this one.</p>
-    </div>
-  </section>
-
-  <!-- ============ ARCHITECTURE ============ -->
-  <section id="architecture" class="wrap">
-    <div class="section-head reveal">
-      <h2>How a message becomes an answer</h2>
-    </div>
-    <div class="flow reveal">[ONLINE, PERIODIC]                    [PER MESSAGE]
-Gazette / NCPB / kilimo.go.ke        Farmer SMS → Africa's Talking webhook
-/ county pages                                        │
-   │  nitapata ingest (Python)          1  keyword? else normalise (sw/en/Sheng)
-   ▼                                    2  scope gate ── out of scope → boundary
-parse ► chunk (+locator) ► embed        3  split compound asks
-   │                                    4  resolve county + declared state ── missing → 1 clarifying Q
-   ▼                                    5  retrieve (cycle + county filter, authority rerank)
-Cloudflare Vectorize + D1               6  generate (Haiku, cite-or-refuse)
-(the corpus is the ONLY database)       7  citation check ── violation → fallback
-                                        8  render template + GSM-7 → reply (≤2 SMS)
-Astro demo UI + judge panel ──────►</div>
-    <div class="grid2">
-      <div class="card reveal">
-        <h3>Stack</h3>
-        <ul>
-          <li>Ingestion: Python, pdfplumber and tesseract OCR, ruff, pytest</li>
-          <li>Answer service: TypeScript (strict) Cloudflare Worker</li>
-          <li>Storage: Vectorize for chunks, D1 for metadata, KV for clarify state</li>
-          <li>Embeddings: Workers AI <code>bge-m3</code>, multilingual</li>
-          <li>LLM: Claude Haiku 4.5, classification and generation</li>
-          <li>SMS: Africa's Talking, sandbox first</li>
-        </ul>
-      </div>
-      <div class="card reveal">
-        <h3>Privacy and honesty</h3>
-        <ul>
-          <li>No farmer PII at rest, state is hashed-key, expires in fifteen minutes</li>
-          <li>Logs strip phone numbers, checked in review and in CI</li>
-          <li>A price the corpus can't compare gets the current figure and an explicit decline</li>
-          <li>If venue Wi-Fi dies, a recorded replay, clearly labelled as a recorded run</li>
-        </ul>
+      <div class="demo-side">
+        <h3>See it answer. See it refuse.</h3>
+        <p>Every reply lands in one of the three outcomes. Beside the phone, a judge panel shows the retrieved chunk, document, page and date behind each cited answer.</p>
+        <p class="fact">The Machakos fallback is real. Its only public document names four depots and no bag price, so the system says so. That gap is why the demo county became Kakamega.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============ SOURCES ============ -->
-  <section id="sources" class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow">The corpus</p>
-      <h2>Where the citable documents live</h2>
+<!-- 5 · Pin 2 -->
+<section class="slide" id="s5">
+  <div class="inner risk-grid">
+    <div>
+      <span class="tag clay">Pin 2 &middot; Kenya's AI Bill 2026</span>
+      <p class="risk-big">HIGH<br>RISK</p>
+      <p class="risk-src">Senate Bills No. 4 of 2026, Bill Digest p.10, names agriculture a high-risk sector. The Bill is not law yet. This is our self-classification, and we build up to it, not around it.</p>
+      <p class="residual">Two residuals we accept: a correct answer may be refused rather than guessed; no Gazette notice has been located for the programme's legal basis, so we do not claim one.</p>
     </div>
-    <div class="table-scroll reveal">
-    <table>
-      <thead><tr><th>Publisher</th><th>What we cite</th><th>Access point</th></tr></thead>
-      <tbody>
-        <tr><td>Ministry of Agriculture</td><td>NFSP cycle launches, prices, policy framework</td><td><a href="https://kilimo.go.ke" rel="noopener">kilimo.go.ke</a></td></tr>
-        <tr><td>NCPB</td><td>Subsidy FAQ, circulars, depot and price notices</td><td><a href="https://ncpb.co.ke" rel="noopener">ncpb.co.ke</a>, FAQ verified</td></tr>
-        <tr><td>County Government of Kakamega</td><td>County price announcements, collection points</td><td><a href="https://kakamega.go.ke" rel="noopener">kakamega.go.ke</a>, KSh 2,000 announcement verified</td></tr>
-        <tr><td>Kenya News Agency</td><td>Official statements where no primary document exists</td><td><a href="https://www.kenyanews.go.ke" rel="noopener">kenyanews.go.ke</a></td></tr>
-        <tr><td>KALRO / KIAMIS</td><td>Farmer registration and e-voucher platform</td><td><a href="https://kiamislive.kalro.org/" rel="noopener">kiamislive.kalro.org</a></td></tr>
-        <tr><td>Kenya Law / Gazettes.Africa</td><td>Gazette notices, programme's legal basis</td><td>Not yet located, logged as a gap</td></tr>
-      </tbody>
-    </table>
+    <div class="oblig">
+      <div class="ob"><span class="ck">&check;</span>Risk and rights assessment before deployment</div>
+      <div class="ob"><span class="ck">&check;</span>Human-rights impact, harms named up front</div>
+      <div class="ob"><span class="ck">&check;</span>Transparency: three outcomes, cited page and date</div>
+      <div class="ob"><span class="ck">&check;</span>Documentation: every source hashed and snapshotted</div>
+      <div class="ob"><span class="ck">&check;</span>Data Protection Act: no personal data at rest</div>
+      <div class="ob"><span class="ck">&check;</span>Security: a citation check the model cannot override</div>
+      <div class="ob"><span class="ck">&check;</span>Consent for likeness or voice: not applicable</div>
     </div>
-    <p class="footnote reveal">Field-verified pressure test: the subsidy price moved KSh 2,500 to KSh 2,000 mid-programme. That is why every chunk carries a cycle tag and publish date, and every answer shows the document's date. Demo county and citation ranking are Day-0 build decisions, not the two pins above, closed in <code>SPEC.md</code> §5A.</p>
-  </section>
+  </div>
+</section>
 
-  <!-- ============ PLAN ============ -->
-  <section id="plan" class="wrap">
-    <div class="section-head reveal">
-      <p class="eyebrow">Four days</p>
-      <h2>Build plan</h2>
+<!-- 6 · How -->
+<section class="slide" id="s6">
+  <div class="inner">
+    <span class="tag">How it works</span>
+    <h2 class="display" style="font-size:clamp(1.8rem,4vw,3rem)">Four rules that do not move.</h2>
+    <div class="rules">
+      <div class="rule"><b>1</b><span>No agronomic advice</span></div>
+      <div class="rule"><b>2</b><span>Not a marketplace</span></div>
+      <div class="rule"><b>3</b><span>An uncited figure fails</span></div>
+      <div class="rule"><b>4</b><span>No farmer database</span></div>
     </div>
-    <div class="timeline reveal">
-      <div class="day"><span class="d">Day 0</span><div><b>Scaffold and document hunt.</b><span>Sources registered, both pins pinned, a rules-based demo stand-in verified end to end.</span></div></div>
-      <div class="day"><span class="d">Day 1</span><div><b>Real ingestion.</b><span>Parse, chunk and embed into Vectorize and D1. Retrieval checked against Nafula's three questions.</span></div></div>
-      <div class="day"><span class="d">Day 2</span><div><b>Worker pipeline and evals together.</b><span>Scope gate, retrieval, generation, citation check, at least forty eval cases, zero uncited figures.</span></div></div>
-      <div class="day"><span class="d">Day 3</span><div><b>Channels.</b><span>Africa's Talking sandbox wiring, the judge panel, GSM-7 segmentation inside the two-SMS budget.</span></div></div>
-      <div class="day"><span class="d">Day 4</span><div><b>Red team and dry run.</b><span>Adversarial evals, recorded replay, a rehearsal of "which document, which page?"</span></div></div>
-    </div>
-  </section>
+    <div class="flow">Gazette / NCPB / kilimo.go.ke      Farmer SMS -&gt; Africa's Talking webhook
+/ county pages                                       │
+   │  nitapata ingest (Python)       1  scope gate ── out of scope -&gt; boundary
+   ▼                                  2  resolve county ── missing -&gt; one clarifying Q
+parse -&gt; chunk (+page) -&gt; embed       3  retrieve (cycle + county filter, newest wins)
+   ▼                                  4  generate (Claude Haiku, cite-or-refuse)
+Cloudflare Vectorize + D1             5  citation check ── violation -&gt; fallback line
+(the corpus is the ONLY database)     6  GSM-7 segment -&gt; reply, at most 2 SMS</div>
+    <p class="stack">Python ingestion, a TypeScript Worker, Cloudflare Vectorize, D1 and KV, Claude Haiku 4.5, Africa's Talking. No personal data at rest: phone numbers are hashed, state expires in fifteen minutes, logs never carry a number.</p>
+  </div>
+</section>
 
-  <!-- ============ COLLABORATION ============ -->
-  <section id="collab" class="wrap">
-    <div class="section-head reveal">
-      <h2>How the team plugs in</h2>
+<!-- 7 · Close -->
+<section class="slide" id="s7">
+  <div class="inner">
+    <span class="tag">The judges' question</span>
+    <h2 class="display">Which <em>document</em>, which <em>page</em>?</h2>
+    <p class="quote">A build that says "I don't know" correctly beats one that guesses.
+      <small>The sijui rule. No sheet, no build.</small>
+    </p>
+    <div class="links">
+      <a class="primary" href="SPEC.md">SPEC.md</a>
+      <a href="docs/pins/PIN-1-who-this-helps.md">Pin 1 sheet</a>
+      <a href="docs/pins/PIN-2-ai-bill-2026-risk-sheet.md">Pin 2 sheet</a>
+      <a href="corpus/sources.yaml">Sources</a>
+      <a href="https://github.com/Joshkingsley/Kilimo-Solution-Impact-Lab-2.0" rel="noopener">GitHub</a>
     </div>
-    <div class="steps reveal">
-      <div class="step"><span class="n">1</span><div><b>Read <code>SPEC.md</code> first.</b><span>It is the contract. Raise a change before writing code, not after.</span></div></div>
-      <div class="step"><span class="n">2</span><div><b>Claim a lane.</b><span>Corpus, Worker pipeline, SMS and demo UI, or evals. Lanes touch at two interfaces only.</span></div></div>
-      <div class="step"><span class="n">3</span><div><b>Branch per task.</b><span>Small commits, conventional prefixes. <code>main</code> stays deployable.</span></div></div>
-      <div class="step"><span class="n">4</span><div><b>Every change ships with an eval case.</b><span>No eval, no merge.</span></div></div>
-      <div class="step"><span class="n">5</span><div><b>Ten-minute daily sync.</b><span>What merged, what's blocked, does anything threaten a fixed rule.</span></div></div>
-      <div class="step"><span class="n">6</span><div><b>Secrets never touch source.</b><span>Environment variables and <code>wrangler secret</code> only.</span></div></div>
-    </div>
-  </section>
+  </div>
+</section>
 
 </main>
 
-<footer class="wrap">
-  <p><strong>Nitapata?</strong> · Kilimo track, AI Mashinani, September 2026. The system either answers with a citation, asks one clarifying question, or states its boundary, never a fourth option.</p>
-</footer>
-
 <script>
-  // Tabs: click to switch thread, keyboard arrows for the same control
+  // Tabs
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tabs button'));
   function selectTab(btn){
     tabs.forEach(function(b){ b.setAttribute('aria-selected', b === btn); });
@@ -269,22 +349,41 @@ Astro demo UI + judge panel ──────►</div>
   tabs.forEach(function(btn, i){
     btn.addEventListener('click', function(){ selectTab(btn); });
     btn.addEventListener('keydown', function(e){
-      if (e.key === 'ArrowRight') tabs[(i + 1) % tabs.length].focus();
-      if (e.key === 'ArrowLeft') tabs[(i - 1 + tabs.length) % tabs.length].focus();
+      if (e.key === 'ArrowRight') { e.stopPropagation(); tabs[(i + 1) % tabs.length].focus(); }
+      if (e.key === 'ArrowLeft')  { e.stopPropagation(); tabs[(i - 1 + tabs.length) % tabs.length].focus(); }
     });
   });
 
-  // Reveal-on-scroll, skipped entirely under reduced motion
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduceMotion && 'IntersectionObserver' in window) {
+  // Deck navigation: arrows, space, PageUp/PageDown, Home/End
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var current = 0;
+
+  function goTo(i){
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    slides[i].scrollIntoView({ block: 'start' });
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goTo(current - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  // Track the slide in view (no scroll listener; IntersectionObserver only)
+  if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting) { entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
+      entries.forEach(function(en){
+        if (en.isIntersecting) {
+          current = slides.indexOf(en.target);
+          counter.textContent = (current + 1) + ' / ' + slides.length;
+          progress.style.width = ((current + 1) / slides.length * 100) + '%';
+        }
       });
-    }, { threshold: 0.15 });
-    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-  } else {
-    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
+    }, { threshold: 0.55 });
+    slides.forEach(function(s){ io.observe(s); });
   }
 </script>
 </body>

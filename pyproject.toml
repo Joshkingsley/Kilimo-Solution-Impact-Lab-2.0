@@ -20,5 +20,13 @@ nitapata = "ingest.cli:main"
 line-length = 100
 target-version = "py312"
 
+[tool.ruff.lint.per-file-ignores]
+# The pipeline deliberately catches every SDK/network error at the LLM boundary and falls back to the
+# templated path (SPEC §9.2 step 6: "API error -> fallback"). Broad catches there are the design.
+"nitapata/*.py" = ["BLE001"]
+# Teammate utilities kept as contributed; lint debt tracked, not rewritten here.
+"app/sendsms.py" = ["BLE001", "LOG015"]
+"app/scheme_doc_scraper.py" = ["BLE001"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests", "evals"]

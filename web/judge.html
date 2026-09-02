@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nitapata? judge panel</title>
+<meta name="description" content="Live judge panel: every reply beside the retrieved chunk, document, page and date that backs it.">
+<style>
+:root{--ink:#0b0f0c;--soft:#5a635d;--line:#e6e6e2;--accent:#15803d;--accent-soft:#eaf7ee;--amber:#8a5a12;--amber-soft:#f7ecd8;--clay:#8c3a2e;--clay-soft:#f6e5e1;
+  --mono:ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;--sans:-apple-system,'Segoe UI',system-ui,Roboto,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;color:var(--ink);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+header{display:flex;justify-content:space-between;align-items:center;padding:.9rem 1.25rem;border-bottom:1px solid var(--line)}
+header b{font-size:1.05rem} header b span{color:var(--accent)}
+.mode{font:600 .74rem/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;padding:.4rem .7rem;border-radius:999px;border:1px solid var(--line)}
+.mode.live{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+.mode.rec{color:var(--clay);background:var(--clay-soft);border-color:transparent}
+main{display:grid;gap:1.25rem;padding:1.25rem;max-width:1200px;margin:0 auto}
+@media(min-width:900px){main{grid-template-columns:380px 1fr}}
+.phone{background:#101613;border-radius:1.4rem;padding:.9rem .8rem 1rem;box-shadow:0 14px 34px rgba(11,15,12,.14)}
+.status{color:#8ba394;font:600 .66rem/1 var(--mono);display:flex;justify-content:space-between;padding:.1rem .35rem .6rem}
+.thread{display:flex;flex-direction:column;gap:.45rem;min-height:380px;max-height:60vh;overflow:auto;padding-bottom:.4rem}
+.msg{max-width:88%;padding:.55rem .75rem;border-radius:.85rem;font-size:.84rem;line-height:1.45;white-space:pre-wrap}
+.msg.in{align-self:flex-end;background:#2e6e4c;color:#f2f7f3;border-bottom-right-radius:.2rem}
+.msg.out{align-self:flex-start;background:#1d2622;color:#dfe7e1;border-bottom-left-radius:.2rem;border:1px solid #2a352f}
+.otag{align-self:flex-start;font:700 .6rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;padding:.22rem .45rem;border-radius:.3rem}
+.otag.cite{background:#173526;color:#8fd0a8}.otag.clarify{background:#3a2f14;color:#e0b06a}.otag.boundary{background:#3a1f19;color:#e59a8a}
+form{display:flex;gap:.4rem;margin-top:.7rem}
+input{flex:1;font:inherit;padding:.6rem .75rem;border-radius:999px;border:1px solid var(--line);color:var(--ink)}
+input:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font:600 .85rem/1 var(--sans);padding:.6rem 1rem;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.prompts{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.prompts button{font-size:.76rem;padding:.4rem .7rem;color:var(--soft)}
+.panel h2{font-size:1rem;margin-bottom:.6rem}
+.card{border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;margin-bottom:.8rem;background:#fff}
+.row{display:flex;flex-wrap:wrap;gap:.5rem .9rem;font:600 .76rem/1.6 var(--mono);color:var(--soft)}
+.row b{color:var(--ink)}
+.ok{color:var(--accent)} .bad{color:var(--clay)}
+.chunk{border-left:3px solid var(--line);padding:.5rem .8rem;margin:.5rem 0;font-size:.84rem}
+.chunk.used{border-left-color:var(--accent);background:var(--accent-soft)}
+.chunk .meta{font:600 .72rem/1.5 var(--mono);color:var(--soft)}
+.chunk .meta b{color:var(--accent)}
+.hits span{display:inline-block;font:700 .68rem/1 var(--mono);padding:.3rem .55rem;border-radius:.3rem;background:var(--clay-soft);color:var(--clay);margin:.15rem .25rem 0 0}
+.empty{color:var(--soft);font-size:.9rem}
+.reqs li{font-size:.86rem;list-style:none;padding:.15rem 0}
+.reqs .miss{color:var(--clay);font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <b>Nitapata<span>?</span> judge panel</b>
+  <div>
+    <span id="mode" class="mode live">Live</span>
+    <button id="toggle" style="margin-left:.5rem">Play recorded run</button>
+  </div>
+</header>
+<main>
+  <section>
+    <div class="phone">
+      <div class="status"><span>Safaricom &middot; SMS</span><span id="who">demo phone</span></div>
+      <div class="thread" id="thread"></div>
+    </div>
+    <form id="form">
+      <input id="text" placeholder="Andika ujumbe... (e.g. Bei ya mbolea Kakamega ni ngapi?)" autocomplete="off" aria-label="Message">
+      <button class="primary" type="submit">Send</button>
+    </form>
+    <div class="prompts" id="prompts"></div>
+    <div style="margin-top:.6rem"><button id="reset">New conversation</button> <button id="seed" title="Injects a wrong price into the draft to show the citation check discarding it">Seed a bad figure</button></div>
+  </section>
+
+  <aside class="panel">
+    <h2>Which document, which page?</h2>
+    <div class="card" id="summary"><p class="empty">Send a message. Every reply lands here with the chunk, document, page and date behind it.</p></div>
+    <div class="card" id="citations"></div>
+    <div class="card" id="retrieved"></div>
+  </aside>
+</main>
+
+<script>
+var PROMPTS = [
+  "Bei ya mbolea msimu huu ni ngapi?", "Kakamega",
+  "Nahitaji nini ili nipate mbolea ya ruzuku?",
+  "Nikienda depot nikuje na nini? Nina ID lakini sijasajiliwa",
+  "Depo ya Malava inanihudumia?", "Naweza pata mbolea kwa mkopo?",
+  "Nipande mahindi lini Kakamega?", "Bei Kakamega imepanda kuliko mwaka jana?",
+  "Kangundo depot Machakos inanihudumia?", "Bei Machakos ni ngapi?", "MSAADA"
+];
+var sender = "judge-" + Math.random().toString(36).slice(2, 8);
+var thread = document.getElementById("thread");
+var recorded = null, recIndex = 0, recMode = false;
+
+function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function bubble(cls, text){ thread.appendChild(el("div", "msg " + cls, text)); thread.scrollTop = thread.scrollHeight; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+function showPanel(r){
+  var d = r.diagnostics;
+  var hits = d.guardrail_hits.length ? '<div class="hits">' + d.guardrail_hits.map(function(h){ return "<span>" + esc(h) + "</span>"; }).join("") + "</div>" : '<span class="ok">no guardrail hits</span>';
+  document.getElementById("summary").innerHTML =
+    '<div class="row"><span>outcome <b class="' + (r.outcome === "cite" ? "ok" : "") + '">' + esc(r.outcome.toUpperCase()) + '</b></span>' +
+    '<span>intent <b>' + esc(r.intent) + '</b></span><span>language <b>' + esc(r.language) + '</b></span>' +
+    '<span>segments <b>' + r.segments.length + '</b></span><span>chars <b>' + r.reply.length + '</b></span>' +
+    '<span>latency <b>' + d.latency_ms + ' ms</b></span><span>model <b>' + esc(d.model) + '</b></span></div>' +
+    '<p style="margin-top:.6rem">' + hits + '</p>' +
+    (d.notes.length ? '<p class="empty" style="margin-top:.4rem">' + d.notes.map(esc).join(" &middot; ") + '</p>' : '') +
+    (Object.keys(r.declared).length ? '<p class="empty" style="margin-top:.4rem">declared (this thread, 15 min): ' + esc(JSON.stringify(r.declared)) + '</p>' : '');
+
+  var c = document.getElementById("citations");
+  if (r.citations.length) {
+    c.innerHTML = "<h2>Citations</h2>" + r.citations.map(function(x){
+      return '<div class="chunk used"><div class="meta"><b>' + esc(x.short_cite) + '</b> &middot; ' + esc(x.page_label) + ' &middot; ' + esc(x.publish_date) + ' &middot; ' + esc(x.chunk_id) + '</div><div>' + esc(x.doc_title) + '</div></div>';
+    }).join("") + (r.requirements.length ? '<h2 style="margin-top:.8rem">Requirements (cited)</h2><ul class="reqs">' + r.requirements.map(function(q){
+      return '<li>' + (q.missing ? '<span class="miss">missing (farmer said so): </span>' : '') + esc(q.label_en) + ' <span class="empty">&larr; ' + esc(q.chunk_id) + '</span></li>';
+    }).join("") + "</ul>" : "") + (r.declines.length ? '<p class="empty" style="margin-top:.6rem">declined: ' + r.declines.map(esc).join("; ") + "</p>" : "");
+  } else {
+    c.innerHTML = "<h2>Citations</h2><p class=\"empty\">" + (r.outcome === "boundary" ? "None. A boundary reply carries no citation by design." : "None yet.") + "</p>";
+  }
+
+  var rv = document.getElementById("retrieved");
+  rv.innerHTML = "<h2>Retrieved chunks</h2>" + (d.retrieved.length ? d.retrieved.map(function(x){
+    return '<div class="chunk ' + (x.used ? "used" : "") + '"><div class="meta">' + esc(x.chunk_id) + ' &middot; score ' + x.score + (x.used ? ' &middot; <b>used</b>' : '') + '</div><div>' + esc(x.text) + '</div></div>';
+  }).join("") : '<p class="empty">Nothing retrieved: the scope gate or a keyword stopped the pipeline before retrieval.</p>');
+}
+
+function render(message, r){
+  bubble("in", message);
+  thread.appendChild(el("span", "otag " + r.outcome, r.outcome + (r.diagnostics.guardrail_hits.length ? " · " + r.diagnostics.guardrail_hits.join(",") : "")));
+  r.segments.forEach(function(s){ bubble("out", s.text); });
+  showPanel(r);
+}
+
+async function send(text, seed){
+  if (recMode) return;
+  var res = await fetch("/demo/message", { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ text: text, sender: sender, seed_bad_figure: !!seed }) });
+  var r = await res.json();
+  render(text, r);
+}
+
+document.getElementById("form").addEventListener("submit", function(e){
+  e.preventDefault();
+  var t = document.getElementById("text");
+  if (!t.value.trim()) return;
+  send(t.value.trim());
+  t.value = "";
+});
+document.getElementById("reset").addEventListener("click", function(){
+  sender = "judge-" + Math.random().toString(36).slice(2, 8); thread.innerHTML = ""; recIndex = 0;
+  document.getElementById("summary").innerHTML = '<p class="empty">New conversation. Nothing about the previous one is kept.</p>';
+  document.getElementById("citations").innerHTML = ""; document.getElementById("retrieved").innerHTML = "";
+});
+document.getElementById("seed").addEventListener("click", function(){ send("Bei Kakamega ni ngapi?", true); });
+
+PROMPTS.forEach(function(p){
+  var b = el("button", null, p); b.type = "button";
+  b.addEventListener("click", function(){ recMode ? stepRecorded() : send(p); });
+  document.getElementById("prompts").appendChild(b);
+});
+
+async function stepRecorded(){
+  if (!recorded) { var res = await fetch("/replay"); if (!res.ok) { alert("No recorded run on disk. Run: python3 evals/record_run.py"); return; } recorded = (await res.json()).steps; }
+  if (recIndex >= recorded.length) { recIndex = 0; thread.innerHTML = ""; }
+  var s = recorded[recIndex++]; document.getElementById("who").textContent = s.who + " (recorded)"; render(s.message, s.reply);
+}
+document.getElementById("toggle").addEventListener("click", function(){
+  recMode = !recMode; thread.innerHTML = ""; recIndex = 0;
+  var m = document.getElementById("mode");
+  m.textContent = recMode ? "Recorded run" : "Live"; m.className = "mode " + (recMode ? "rec" : "live");
+  this.textContent = recMode ? "Back to live" : "Play recorded run";
+  document.getElementById("who").textContent = recMode ? "recorded" : "demo phone";
+  document.getElementById("summary").innerHTML = recMode
+    ? '<p class="empty"><b>Recorded run.</b> Click any prompt (or press Next) to step through the transcript recorded earlier. Nothing here is live.</p>'
+    : '<p class="empty">Live. Send a message.</p>';
+});
+document.addEventListener("keydown", function(e){ if (recMode && (e.key === "ArrowRight" || e.key === " ")) { e.preventDefault(); stepRecorded(); } });
+</script>
+</body>
+</html>

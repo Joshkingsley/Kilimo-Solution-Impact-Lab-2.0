@@ -22,3 +22,6 @@ corpus/tmp/
 
 # OS / editor
 .DS_Store
+
+# Local-only presentation material (never committed)
+docs/local/
