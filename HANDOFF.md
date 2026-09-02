@@ -176,3 +176,23 @@ Scripts: `scripts/run_sms.sh`, `scripts/tunnel.sh`, `scripts/smoke_sms.sh`.
 Tests: `tests/test_webhook.py` (8) + `evals/` (12) — 20 green.
 **Manual steps that remain are in `docs/SMS-LIVE-RUNBOOK.md`** (rotate key,
 sandbox key, tunnel install, callback URL, simulator, sender-ID request).
+
+## Presentation redesign, 2026-09-02 (design-taste-frontend skill)
+
+`index.html` rewritten as a modern, minimalist team pitch hub (design read:
+redesign-overhaul, trust-first/civic-tech register, native CSS single-file
+architecture, no build step). Design language: mono type renders anything a
+farmer or judge could verify against a document (citations, dates, chunk
+ids); sans renders everything else. One locked accent (forest green), status
+colours (amber/clay) reserved strictly for the cite/clarify/boundary system,
+consistent light/dark tokens. Demo phone thread updated to the Kakamega/Nafula
+personas per SPEC.md §6; the old stale Machakos-vs-Kakamega and citation-tier
+"pins" framing is gone from the page (that's now §5A build decisions, noted
+as a footnote, not one of the two hackathon pins).
+
+**The two pins now live on their own page, `pins.html`**, linked from a
+compact teaser card on the hub and from top-nav "Pins". Shared design tokens
+factored into `styles.css`, linked by both pages, no duplication drift.
+
+Zero em/en-dashes anywhere (mechanically verified). Both pages parse clean
+with Python's `html.parser` and serve 200 over a local static server.

@@ -3,292 +3,289 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nitapata? — Team Build Hub · Kilimo track, AI Mashinani</title>
-<meta name="description" content="Nitapata? answers fertiliser subsidy eligibility, process and price questions over SMS — every figure cited to a public document and page. Team build hub: demo, guardrails, build plan and collaboration steps.">
-<meta property="og:title" content="Nitapata? — citation-locked subsidy assistant">
-<meta property="og:description" content="Cited answer, one clarifying question, or a stated boundary. Never a fourth option. Team build hub for the Kilimo track.">
+<title>Nitapata?, the build hub · Kilimo track, AI Mashinani</title>
+<meta name="description" content="Nitapata? answers fertiliser subsidy eligibility, process and price questions over SMS, every figure cited to a public document and page. The two hackathon pins: who this helps, and the AI Bill 2026 risk sheet.">
+<meta property="og:title" content="Nitapata?, a citation-locked subsidy assistant">
+<meta property="og:description" content="A cited answer, one clarifying question, or a stated boundary. Never a fourth option.">
 <meta property="og:type" content="website">
-<style>
-  :root{
-    --ink:#1c2420; --muted:#5a675f; --paper:#f7f6f2; --card:#ffffff;
-    --green:#1e6b46; --green-soft:#e4efe8; --amber:#8a5a12; --amber-soft:#f7ecd8;
-    --red:#8c3a2e; --red-soft:#f6e5e1; --line:#e3e1d9; --mono:ui-monospace,'Cascadia Code',Menlo,Consolas,monospace;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
-  main{max-width:960px;margin:0 auto;padding:0 1rem 4rem}
-  a{color:var(--green)}
-  h1,h2,h3{line-height:1.2;letter-spacing:-0.01em}
-  h2{font-size:1.45rem;margin:0 0 .35rem}
-  section{margin-top:3rem}
-  .kicker{font:600 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--green);margin-bottom:.6rem}
-  .lede{color:var(--muted);max-width:60ch}
-
-  header.hero{padding:3rem 0 0}
-  header.hero h1{font-size:clamp(2.1rem,7vw,3.2rem);margin:.2rem 0 .8rem}
-  header.hero h1 em{font-style:normal;color:var(--green)}
-  .rule3{display:grid;gap:.5rem;margin-top:1.4rem}
-  .rule3 li{list-style:none;background:var(--card);border:1px solid var(--line);border-radius:.6rem;padding:.65rem .9rem;font-size:.95rem}
-  .rule3 b{color:var(--green)}
-  .rule3 .never{border-style:dashed;color:var(--muted)}
-
-  /* phone demo */
-  .demo-wrap{display:flex;flex-direction:column;gap:1.2rem}
-  .tabs{display:flex;gap:.5rem;flex-wrap:wrap}
-  .tabs button{border:1px solid var(--line);background:var(--card);border-radius:2rem;padding:.45rem .95rem;font:600 .85rem/1 inherit;color:var(--muted);cursor:pointer}
-  .tabs button[aria-selected="true"]{background:var(--green);border-color:var(--green);color:#fff}
-  .phone{background:#101613;border-radius:1.6rem;padding:.9rem .8rem 1.1rem;max-width:380px;width:100%;margin:0 auto;box-shadow:0 12px 30px rgba(20,30,25,.18)}
-  .phone .status{color:#8ba394;font:600 .7rem/1 var(--mono);display:flex;justify-content:space-between;padding:.2rem .5rem .7rem}
-  .thread{display:flex;flex-direction:column;gap:.55rem;min-height:340px}
-  .msg{max-width:86%;padding:.55rem .75rem;border-radius:.9rem;font-size:.86rem;line-height:1.45;white-space:pre-line}
-  .msg.in{align-self:flex-end;background:#2e6e4c;color:#f2f7f3;border-bottom-right-radius:.25rem}
-  .msg.out{align-self:flex-start;background:#1d2622;color:#dfe7e1;border-bottom-left-radius:.25rem;border:1px solid #2a352f}
-  .msg .cite{display:block;margin-top:.35rem;font:600 .72rem/1.4 var(--mono);color:#8fd0a8}
-  .msg .bound{display:block;margin-top:.35rem;font:600 .72rem/1.4 var(--mono);color:#e0b06a}
-  .msg small{display:block;margin-top:.3rem;color:#7d8f84;font-size:.68rem}
-  .outcome-tag{align-self:flex-start;font:700 .66rem/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;padding:.3rem .55rem;border-radius:.3rem}
-  .outcome-cite{background:#173526;color:#8fd0a8}
-  .outcome-clarify{background:#3a2f14;color:#e0b06a}
-  .outcome-boundary{background:#3a1f19;color:#e59a8a}
-  .demo-note{font-size:.85rem;color:var(--muted);max-width:52ch;margin:0 auto;text-align:center}
-
-  /* pin cards */
-  .pins{display:grid;gap:1rem;grid-template-columns:1fr}
-  .pin{background:var(--amber-soft);border:1px solid #e6d3ab;border-radius:.8rem;padding:1.1rem 1.2rem}
-  .pin h3{font-size:1.05rem;margin-bottom:.4rem}
-  .pin .tag{display:inline-block;font:700 .66rem/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--amber);background:#fff;border:1px solid #e6d3ab;border-radius:.3rem;padding:.3rem .5rem;margin-bottom:.6rem}
-  .pin p{font-size:.92rem}
-  .pin .decide{margin-top:.6rem;font-size:.85rem;color:var(--amber);font-weight:600}
-
-  /* generic cards / lists */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:.8rem;padding:1.1rem 1.2rem}
-  .grid2{display:grid;gap:1rem;grid-template-columns:1fr}
-  .steps{counter-reset:s;display:grid;gap:.55rem}
-  .steps li{list-style:none;counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:.6rem;padding:.6rem .8rem .6rem 2.6rem;position:relative;font-size:.92rem}
-  .steps li::before{content:counter(s);position:absolute;left:.7rem;top:.62rem;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--green-soft);color:var(--green);font:700 .75rem/1.35rem var(--mono);text-align:center}
-  .steps li b{display:block}
-  .steps li span{color:var(--muted);font-size:.85rem}
-  code{font:.85em var(--mono);background:var(--green-soft);border-radius:.25rem;padding:.1em .35em}
-  .flow{background:#101613;color:#cfe0d4;border-radius:.8rem;padding:1rem 1.1rem;overflow-x:auto;font:.78rem/1.7 var(--mono);white-space:pre}
-
-  table{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--card);border:1px solid var(--line);border-radius:.8rem;overflow:hidden}
-  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--line);vertical-align:top}
-  th{font:700 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);background:var(--paper)}
-  tr:last-child td{border-bottom:0}
-  .table-scroll{overflow-x:auto}
-
-  .day{display:flex;gap:.9rem;align-items:baseline;background:var(--card);border:1px solid var(--line);border-radius:.6rem;padding:.7rem .9rem;margin-bottom:.55rem}
-  .day .d{font:700 .8rem/1.6 var(--mono);color:var(--green);white-space:nowrap;min-width:4.4rem}
-  .day p{font-size:.9rem}
-  .day p b{display:block}
-
-  .nogo{background:var(--red-soft);border:1px solid #e3c4bc;border-radius:.8rem;padding:1rem 1.2rem;font-size:.9rem}
-  .nogo b{color:var(--red)}
-
-  footer{margin-top:4rem;padding-top:1.2rem;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
-
-  @media(min-width:700px){
-    .pins{grid-template-columns:1fr 1fr}
-    .grid2{grid-template-columns:1fr 1fr}
-    .demo-wrap{flex-direction:row;align-items:flex-start}
-    .demo-side{flex:1;padding-top:1rem}
-    .demo-note{text-align:left;margin:0}
-  }
-</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Nitapata?, team build hub",
+  "description": "Citation-locked SMS assistant for Kenya's National Fertiliser Subsidy Programme. Kilimo track, AI Mashinani hackathon.",
+  "datePublished": "2026-09-02",
+  "inLanguage": ["en", "sw"]
+}
+</script>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="hero">
-    <p class="kicker">AI Mashinani · Kilimo Track · Team Build Hub</p>
-    <h1><em>Nitapata?</em><br>Will I get it — says which document, which page.</h1>
-    <p class="lede">An SMS assistant for smallholders on the National Fertiliser Subsidy Programme. It answers <strong>eligibility, process and price</strong> — never what to plant — and every figure is traceable to a named public document and page. The farmer needs a feature phone and nothing else.</p>
-    <ul class="rule3">
-      <li><b>1 · Cited answer</b> — figure + [Document, Page, Date] from the corpus</li>
-      <li><b>2 · One clarifying question</b> — e.g. “which ward/depot?”, asked once</li>
-      <li><b>3 · Stated boundary</b> — “that’s not in the public documents” / out of scope</li>
-      <li class="never"><b>✕ Never a fourth option.</b> The system does not improvise.</li>
-    </ul>
-  </header>
+<header class="topbar">
+  <div class="wrap">
+    <span class="brand">Nitapata<span>?</span></span>
+    <nav class="topnav" aria-label="Page sections">
+      <a href="pins.html">Pins</a>
+      <a href="#demo">Demo</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#sources">Sources</a>
+      <a href="#plan">Plan</a>
+    </nav>
+    <a class="specref" href="SPEC.md">Read the spec</a>
+  </div>
+</header>
 
-  <!-- ============ DEMO ============ -->
-  <section id="demo">
-    <p class="kicker">What we are building</p>
-    <h2>The demo, on a phone</h2>
-    <div class="demo-wrap">
+<main id="main">
+
+  <section class="hero wrap">
+    <div class="hero-grid">
       <div>
-        <div class="tabs" role="tablist" aria-label="Demo conversations">
-          <button role="tab" aria-selected="true" data-thread="t1">Nyambura — messy real query</button>
-          <button role="tab" aria-selected="false" data-thread="t2">Adversarial — the boundary</button>
-        </div>
-        <div class="phone" style="margin-top:.8rem">
-          <div class="status"><span>Safaricom · SMS</span><span>NITAPATA 40404</span></div>
-
-          <div class="thread" id="t1">
-            <div class="msg in">niaje. mbolea ya Kangundo bado? na bei imepanda ama? nilikuwa na shida na registration last time</div>
-            <span class="outcome-tag outcome-cite">outcome: cited answer</span>
-            <div class="msg out">Kangundo depot inahudumia wakulima waliosajiliwa Machakos, mzunguko wa sasa.
-<span class="cite">[County Advisory, Uk.3, tarehe]</span>Sikuwezi kuthibitisha “shida ya registration” — hii si kwenye hati za umma. Tafadhali uliza depot moja kwa moja.<small>SMS 1 / 2</small></div>
-            <div class="msg out">Bei ya DAP (50kg) mzunguko huu: KSh [X].
-<span class="cite">[NCPB Tangazo, Uk.1, tarehe]</span>Bei ya mzunguko uliopita haiko kwenye mfumo huu — sikuwezi kusema kama imepanda.<small>SMS 2 / 2</small></div>
-          </div>
-
-          <div class="thread" id="t2" hidden>
-            <div class="msg in">mahindi yangu inakauka nifanye nini? na pia naweza pata loan ya mbegu?</div>
-            <span class="outcome-tag outcome-boundary">outcome: boundary — both parts out of scope</span>
-            <div class="msg out">Samahani — mfumo huu haujibu maswali ya kilimo (nini cha kupanda au kufanya shambani) wala mikopo au bima. Unajibiwa tu: ustahiki, mchakato wa usajili, na bei — kutoka hati za umma.
-<span class="bound">[boundary line — same wording every time, no hedging]</span></div>
-            <div class="msg in">sawa. bei ya mbolea?</div>
-            <span class="outcome-tag outcome-clarify">outcome: one clarifying question</span>
-            <div class="msg out">Bei inategemea depot. Uko wodi gani au depot ipi ya karibu?<small>state held 15 min only, then wiped</small></div>
-          </div>
+        <p class="brandline">AI Mashinani · Kilimo track · team build hub</p>
+        <h1>Every figure names its document and page.</h1>
+        <p class="lede">An SMS assistant for farmers on Kenya's fertiliser subsidy programme. It answers eligibility, process and price. Never agronomy, never a guess.</p>
+        <div class="hero-ctas">
+          <a class="btn" href="#pins">See the two pins</a>
+          <a class="textlink" href="SPEC.md">Read the spec</a>
         </div>
       </div>
-      <div class="demo-side">
-        <p class="demo-note">Every reply above lands in one of the three outcomes — that discipline <em>is</em> the product; the RAG pipeline is just the plumbing that keeps the promise. In the live demo, a judge panel beside this phone shows the retrieved chunk, document, page and date behind each cited answer — the direct response to the judges’ question: <strong>“which document, which page?”</strong></p>
+      <div class="contract reveal">
+        <div class="contract-row">
+          <span class="otag cite">Cite</span>
+          <p></p>
+          <p>A figure, plus <code>[Document, Page, Date]</code> drawn from the corpus.</p>
+        </div>
+        <div class="contract-row">
+          <span class="otag clarify">Clarify</span>
+          <p></p>
+          <p>One question, asked once. "Which ward or depot is nearest?"</p>
+        </div>
+        <div class="contract-row">
+          <span class="otag boundary">Boundary</span>
+          <p></p>
+          <p>A fixed line, no hedging. Never a fourth option.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ============ PINS ============ -->
-  <section id="pins">
-    <p class="kicker">Decide before a single line of build code</p>
-    <h2>The two points to pin — Day 0</h2>
-    <div class="pins">
-      <article class="pin">
-        <span class="tag">Pin № 1</span>
-        <h3>Which demo county?</h3>
-        <p><strong>Machakos</strong> (matches the Nyambura persona) — <em>if and only if</em> its published documents can actually answer all three questions: does the depot serve me, what am I missing, what does the bag cost. If they can’t, we switch to the best-documented county (e.g. Kakamega, which has a published price announcement) and rewrite the persona to match.</p>
-        <p class="decide">How we decide: the Day-0 document hunt. Download the candidates, check the three answers exist on real pages. One county done properly beats eight done vaguely.</p>
-      </article>
-      <article class="pin">
-        <span class="tag">Pin № 2</span>
-        <h3>What counts as a primary citation?</h3>
-        <p>A Gazette notice pricing the <em>current</em> cycle may not exist — prices often land via Ministry of Agriculture and NCPB statements instead. We pin the citation hierarchy now: <strong>Ministry + NCPB documents are acceptable primary citations for figures; the Gazette notice anchors the programme’s legal basis.</strong></p>
-        <p class="decide">How we decide: confirm during the Day-0 hunt which document types actually carry the current-cycle price, and write the hierarchy into <code>corpus/sources.yaml</code> so retrieval ranks them consistently.</p>
-      </article>
+  <section id="pins" class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">The two pins</p>
+      <h2>Pinned before a single line of build code</h2>
+      <p>The brief asks every team to name who this helps and how risky it is under Kenya's proposed AI law. No sheet, no build. Full write-ups live on their own page.</p>
+    </div>
+    <div class="pins-grid">
+      <a class="pin role reveal pin-teaser" href="pins.html">
+        <span class="pintag">Pin 1 &middot; Who this helps</span>
+        <h3>Nafula, Malava ward, Kakamega County</h3>
+        <p>A registered smallholder on a feature phone, about to walk to a collection point. She is not a user. She is someone who loses a day's work if the trip is wasted.</p>
+        <span class="teaser-cta">Read the full pin &rarr;</span>
+      </a>
+      <a class="pin risk reveal pin-teaser" href="pins.html">
+        <span class="pintag">Pin 2 &middot; Risk under Kenya's AI Bill 2026</span>
+        <div class="risk-stamp" style="margin-bottom:.4rem">
+          <b>HIGH RISK</b>
+          <p>Agriculture is named a high-risk sector in the Bill's own digest. We build to the high-risk obligations, not around them.</p>
+        </div>
+        <span class="teaser-cta">Read the obligations met &rarr;</span>
+      </a>
     </div>
   </section>
 
-  <!-- ============ GUARDRAILS ============ -->
-  <section id="rules">
-    <p class="kicker">Non-negotiable</p>
-    <h2>Fixed rules</h2>
-    <div class="grid2">
-      <div class="card">
-        <h3>The four guardrails</h3>
-        <ol style="padding-left:1.2rem;font-size:.92rem;display:grid;gap:.4rem;margin-top:.5rem">
-          <li><b>No agronomic advice.</b> Eligibility and process — never what/when to plant, never what will happen to a crop.</li>
-          <li><b>Not a marketplace.</b> No buying, selling, payments, credit or insurance — not even steering towards one.</li>
-          <li><b>A figure with no document behind it is a failed guardrail.</b> Uncited number in a draft → the draft is discarded, fallback line sent.</li>
-          <li><b>No farmer database.</b> No accounts, no history. The only persistent store is the public-document corpus.</li>
-        </ol>
+  <!-- ============ DEMO ============ -->
+  <section id="demo" class="wrap">
+    <div class="section-head reveal">
+      <h2>See it answer, and see it refuse</h2>
+      <p>The same pipeline behind every thread below. A judge panel beside the live demo shows the retrieved chunk, document, page and date behind each cited answer.</p>
+    </div>
+    <div class="demo-layout">
+      <div>
+        <div class="tabs" role="tablist" aria-label="Demo conversations">
+          <button role="tab" aria-selected="true" aria-controls="t1" data-thread="t1">Nafula asks the price</button>
+          <button role="tab" aria-selected="false" aria-controls="t2" data-thread="t2">The boundary</button>
+          <button role="tab" aria-selected="false" aria-controls="t3" data-thread="t3">Machakos, the honest limit</button>
+        </div>
+        <div class="phone">
+          <div class="status"><span>Safaricom · SMS</span><span>Nitapata sandbox</span></div>
+
+          <div class="thread" id="t1" role="tabpanel">
+            <div class="msg in" lang="sw">Bei ya mbolea msimu huu ni ngapi?</div>
+            <span class="otag-mini clarify">clarify</span>
+            <div class="msg out" lang="sw">Uko kaunti gani? Bei hutegemea kaunti.</div>
+            <div class="msg in" lang="sw">Kakamega</div>
+            <span class="otag-mini cite">cite</span>
+            <div class="msg out" lang="sw">Mfuko wa 50kg wa mbolea ya ruzuku ni KSh 2,000 msimu huu.<span class="cite">[Kaunti ya Kakamega, ¶2, 24 Aug 2026]</span></div>
+            <div class="msg in" lang="sw">Nahitaji nini ili nipate mbolea ya ruzuku?</div>
+            <span class="otag-mini cite">cite</span>
+            <div class="msg out" lang="sw">Unahitaji: kusajiliwa, kitambulisho asili, kufika mwenyewe.<span class="cite">[NCPB FAQ, Uk.1 Q3, Oct 2022]</span></div>
+          </div>
+
+          <div class="thread" id="t2" role="tabpanel" hidden>
+            <div class="msg in" lang="sw">mahindi yangu inakauka nifanye nini? na pia naweza pata loan ya mbegu?</div>
+            <span class="otag-mini boundary">boundary</span>
+            <div class="msg out" lang="sw">Nitapata? hujibu tu maswali ya sifa, utaratibu na bei ya mbolea ya ruzuku. Hilo liko nje ya wigo wetu.<span class="decline">Same wording every time. No hedging.</span></div>
+          </div>
+
+          <div class="thread" id="t3" role="tabpanel" hidden>
+            <div class="msg in" lang="sw">Kangundo depot Machakos inanihudumia?</div>
+            <span class="otag-mini cite">cite, with a decline</span>
+            <div class="msg out" lang="sw">Machakos ina depo nne zilizotengwa za NCPB.<span class="cite">[KNA Machakos, ¶1, 26 Mar 2025]</span><span class="decline">Kama Kangundo ni moja yazo, hilo si kwenye hati za umma.</span></div>
+            <div class="msg in" lang="sw">Bei Machakos ni ngapi?</div>
+            <span class="otag-mini boundary">boundary</span>
+            <div class="msg out" lang="sw">Samahani, hili si kwenye hati za umma tulizo nazo. Uliza ofisi ya kilimo ya wodi yako.</div>
+          </div>
+        </div>
       </div>
-      <div class="nogo">
-        <h3 style="margin-bottom:.4rem">Rejected in ideation — do not resurrect</h3>
-        <p><b>Satellite risk-of-loss scoring, yield / days-to-reap prediction, insurance, credit.</b> Each one fails the citation test unconditionally — a model score has no gazette page behind it. Pitching them reads as not having internalised the constraint. They are a different product with a different risk classification, not a stretch goal of this one.</p>
-      </div>
+      <p class="demo-note reveal">Machakos was the original demo county. Its only public document names four depots with no bag price anywhere, so the price question there is a real fallback, not a scripted one. That gap is why the demo county moved to Kakamega, a Day-0 build decision recorded in <code>SPEC.md</code>, separate from the two pins above.</p>
+    </div>
+  </section>
+
+  <!-- ============ RULES ============ -->
+  <section id="rules" class="wrap">
+    <div class="section-head reveal">
+      <h2>Four rules that do not move</h2>
+    </div>
+    <div class="rulelist reveal">
+      <div class="rule"><span class="num">1</span><div><b>No agronomic advice.</b><span>Eligibility and process, never what or when to plant, never what will happen to a crop.</span></div></div>
+      <div class="rule"><span class="num">2</span><div><b>Not a marketplace.</b><span>No buying, selling, payments, credit or insurance, not even steering towards one.</span></div></div>
+      <div class="rule"><span class="num">3</span><div><b>An uncited figure is a failed guardrail.</b><span>A draft with an uncited number is discarded and replaced with the fallback line.</span></div></div>
+      <div class="rule"><span class="num">4</span><div><b>No farmer database.</b><span>No accounts, no history. The only persistent store is the public-document corpus.</span></div></div>
+    </div>
+    <div class="banner reveal">
+      <h3>Rejected in ideation, do not resurrect</h3>
+      <p>Satellite risk-of-loss scoring, yield or days-to-reap prediction, insurance, credit. Each one fails the citation test unconditionally, a model score has no gazette page behind it. They are a different product with a different risk classification, not a stretch goal of this one.</p>
     </div>
   </section>
 
   <!-- ============ ARCHITECTURE ============ -->
-  <section id="architecture">
-    <p class="kicker">How it works</p>
-    <h2>Architecture &amp; flow</h2>
-    <div class="flow">[ONLINE, PERIODIC — operator runs it]          [PER MESSAGE — Worker]
-Gazette / NCPB / kilimo.go.ke / county PDFs    Farmer SMS → Africa's Talking webhook
-   │  nitapata ingest  (Python CLI)                │
-   ▼                                               1  normalise (Kiswahili/Sheng/EN)
-parse (OCR fallback) → chunk (+page) → embed       2  scope gate  ── out of scope → boundary line
-   │                                               3  split compound asks
-   ▼                                               4  resolve depot ── missing → 1 clarifying Q
-Cloudflare Vectorize + D1                          5  retrieve (cycle + county filter)
-(the corpus is the ONLY database)                  6  generate (Haiku, cite-or-refuse prompt)
-                                                   7  citation check ── uncited figure → fallback
-Astro demo UI + judge panel ─────────────────►     8  GSM-7 segment → reply (≤2 SMS)</div>
-    <div class="grid2" style="margin-top:1rem">
-      <div class="card">
+  <section id="architecture" class="wrap">
+    <div class="section-head reveal">
+      <h2>How a message becomes an answer</h2>
+    </div>
+    <div class="flow reveal">[ONLINE, PERIODIC]                    [PER MESSAGE]
+Gazette / NCPB / kilimo.go.ke        Farmer SMS → Africa's Talking webhook
+/ county pages                                        │
+   │  nitapata ingest (Python)          1  keyword? else normalise (sw/en/Sheng)
+   ▼                                    2  scope gate ── out of scope → boundary
+parse ► chunk (+locator) ► embed        3  split compound asks
+   │                                    4  resolve county + declared state ── missing → 1 clarifying Q
+   ▼                                    5  retrieve (cycle + county filter, authority rerank)
+Cloudflare Vectorize + D1               6  generate (Haiku, cite-or-refuse)
+(the corpus is the ONLY database)       7  citation check ── violation → fallback
+                                        8  render template + GSM-7 → reply (≤2 SMS)
+Astro demo UI + judge panel ──────►</div>
+    <div class="grid2">
+      <div class="card reveal">
         <h3>Stack</h3>
-        <ul style="padding-left:1.1rem;font-size:.9rem;display:grid;gap:.3rem;margin-top:.5rem">
-          <li><b>Ingestion:</b> Python 3.12, pdfplumber + tesseract OCR, ruff, pytest</li>
-          <li><b>Answer service:</b> TypeScript (strict) Cloudflare Worker</li>
-          <li><b>Storage:</b> Vectorize (chunks), D1 (metadata), KV (15-min clarify state, hashed key)</li>
-          <li><b>Embeddings:</b> Workers AI <code>bge-m3</code> (multilingual)</li>
-          <li><b>LLM:</b> Claude Haiku 4.5 — classification + generation</li>
-          <li><b>SMS:</b> Africa’s Talking sandbox</li>
-          <li><b>Demo UI:</b> Astro, static, judge citation panel</li>
+        <ul>
+          <li>Ingestion: Python, pdfplumber and tesseract OCR, ruff, pytest</li>
+          <li>Answer service: TypeScript (strict) Cloudflare Worker</li>
+          <li>Storage: Vectorize for chunks, D1 for metadata, KV for clarify state</li>
+          <li>Embeddings: Workers AI <code>bge-m3</code>, multilingual</li>
+          <li>LLM: Claude Haiku 4.5, classification and generation</li>
+          <li>SMS: Africa's Talking, sandbox first</li>
         </ul>
       </div>
-      <div class="card">
-        <h3>Privacy &amp; honesty posture</h3>
-        <ul style="padding-left:1.1rem;font-size:.9rem;display:grid;gap:.3rem;margin-top:.5rem">
-          <li>No farmer PII at rest — clarify state is hashed-key, intent-only, expires ≤15 min</li>
-          <li>Logs strip phone numbers (grep-verified in review)</li>
-          <li>Comparison questions the corpus can’t support (“has the price gone up?”) get the current cited figure + an explicit decline — never an invented trend</li>
-          <li>If venue Wi-Fi dies: recorded replay of the eval transcript, clearly labelled “recorded run”</li>
+      <div class="card reveal">
+        <h3>Privacy and honesty</h3>
+        <ul>
+          <li>No farmer PII at rest, state is hashed-key, expires in fifteen minutes</li>
+          <li>Logs strip phone numbers, checked in review and in CI</li>
+          <li>A price the corpus can't compare gets the current figure and an explicit decline</li>
+          <li>If venue Wi-Fi dies, a recorded replay, clearly labelled as a recorded run</li>
         </ul>
       </div>
     </div>
   </section>
 
   <!-- ============ SOURCES ============ -->
-  <section id="sources">
-    <p class="kicker">The corpus</p>
-    <h2>Where the citable documents live</h2>
-    <div class="table-scroll">
+  <section id="sources" class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">The corpus</p>
+      <h2>Where the citable documents live</h2>
+    </div>
+    <div class="table-scroll reveal">
     <table>
       <thead><tr><th>Publisher</th><th>What we cite</th><th>Access point</th></tr></thead>
       <tbody>
-        <tr><td>Kenya Law</td><td>Kenya Gazette notices (legal basis)</td><td><a href="https://new.kenyalaw.org" rel="noopener">new.kenyalaw.org</a> → Gazettes</td></tr>
-        <tr><td>Gazettes.Africa</td><td>Searchable gazette mirror</td><td><a href="https://gazettes.africa/gazettes/ke" rel="noopener">gazettes.africa/gazettes/ke</a></td></tr>
-        <tr><td>NCPB</td><td>Subsidy FAQ, circulars, depot/price notices</td><td><a href="https://ncpb.co.ke/wp-content/uploads/dlm_uploads/2022/10/Faqs-A3.pdf" rel="noopener">ncpb.co.ke — subsidy FAQ (PDF, verified)</a></td></tr>
-        <tr><td>Ministry of Agriculture</td><td>NFSP cycle launches, prices, policy framework</td><td><a href="https://kilimo.go.ke" rel="noopener">kilimo.go.ke</a> (NFSP launch statements verified)</td></tr>
-        <tr><td>KALRO / KIAMIS</td><td>Farmer registration + 7-step e-voucher flow</td><td><a href="https://kiamislive.kalro.org/" rel="noopener">kiamislive.kalro.org</a></td></tr>
-        <tr><td>County governments</td><td>County advisories, local price announcements</td><td>e.g. <a href="https://kakamega.go.ke/government-reduces-fertilizer-price-to-ksh-2000-as-ncpb-delivers-subsidized-fertilizer-across-kakamega/" rel="noopener">kakamega.go.ke price announcement (verified)</a></td></tr>
-        <tr><td>Parliament (secondary)</td><td>Programme statements, depot allocation answers</td><td><a href="https://parliament.go.ke" rel="noopener">parliament.go.ke</a></td></tr>
+        <tr><td>Ministry of Agriculture</td><td>NFSP cycle launches, prices, policy framework</td><td><a href="https://kilimo.go.ke" rel="noopener">kilimo.go.ke</a></td></tr>
+        <tr><td>NCPB</td><td>Subsidy FAQ, circulars, depot and price notices</td><td><a href="https://ncpb.co.ke" rel="noopener">ncpb.co.ke</a>, FAQ verified</td></tr>
+        <tr><td>County Government of Kakamega</td><td>County price announcements, collection points</td><td><a href="https://kakamega.go.ke" rel="noopener">kakamega.go.ke</a>, KSh 2,000 announcement verified</td></tr>
+        <tr><td>Kenya News Agency</td><td>Official statements where no primary document exists</td><td><a href="https://www.kenyanews.go.ke" rel="noopener">kenyanews.go.ke</a></td></tr>
+        <tr><td>KALRO / KIAMIS</td><td>Farmer registration and e-voucher platform</td><td><a href="https://kiamislive.kalro.org/" rel="noopener">kiamislive.kalro.org</a></td></tr>
+        <tr><td>Kenya Law / Gazettes.Africa</td><td>Gazette notices, programme's legal basis</td><td>Not yet located, logged as a gap</td></tr>
       </tbody>
     </table>
     </div>
-    <p style="font-size:.85rem;color:var(--muted);margin-top:.6rem">Field-verified pressure test: the subsidy price moved <strong>KSh 2,500 → KSh 2,000 mid-programme</strong>. That is why every chunk carries a cycle tag and publish date, and every answer shows the document’s date. Every fetched document is snapshotted into <code>corpus/raw/</code> so the corpus survives dead government URLs.</p>
+    <p class="footnote reveal">Field-verified pressure test: the subsidy price moved KSh 2,500 to KSh 2,000 mid-programme. That is why every chunk carries a cycle tag and publish date, and every answer shows the document's date. Demo county and citation ranking are Day-0 build decisions, not the two pins above, closed in <code>SPEC.md</code> §5A.</p>
   </section>
 
-  <!-- ============ BUILD PLAN ============ -->
-  <section id="plan">
-    <p class="kicker">Four days</p>
-    <h2>Build plan</h2>
-    <div class="day"><span class="d">Day 0 ·½</span><p><b>Scaffold + document hunt — pins both decisions above.</b>Repo, <code>wrangler.toml</code>, <code>corpus/sources.yaml</code>; seed documents downloaded and spot-checked; demo county and citation hierarchy pinned.</p></div>
-    <div class="day"><span class="d">Day 1</span><p><b>Ingestion end-to-end.</b>Parse → chunk (+page) → embed → Vectorize. Retrieval sanity-checked against the three Nyambura questions. Embedding-model gate: if <code>bge-m3</code> fumbles Kiswahili retrieval, swap to a hosted multilingual API today, not later.</p></div>
-    <div class="day"><span class="d">Day 2</span><p><b>Worker pipeline + eval harness together.</b>Scope gate, retrieval, generation, post-generation citation check, fallback lines, KV clarify flow. <code>evals/messages.yaml</code>: ≥30 cases (six intents + adversarial), each asserting an outcome class — cite / clarify / boundary.</p></div>
-    <div class="day"><span class="d">Day 3</span><p><b>Channels.</b>Africa’s Talking sandbox wiring; Astro demo UI + judge citation panel; GSM-7 segmentation within a 2-SMS budget.</p></div>
-    <div class="day"><span class="d">Day 4 ·½</span><p><b>Red-team + review + pitch dry-run.</b>Adversarial evals, recorded-replay demo mode, reviewer checklist, and a dry-run against the judges’ question: <em>which document, which page?</em></p></div>
+  <!-- ============ PLAN ============ -->
+  <section id="plan" class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Four days</p>
+      <h2>Build plan</h2>
+    </div>
+    <div class="timeline reveal">
+      <div class="day"><span class="d">Day 0</span><div><b>Scaffold and document hunt.</b><span>Sources registered, both pins pinned, a rules-based demo stand-in verified end to end.</span></div></div>
+      <div class="day"><span class="d">Day 1</span><div><b>Real ingestion.</b><span>Parse, chunk and embed into Vectorize and D1. Retrieval checked against Nafula's three questions.</span></div></div>
+      <div class="day"><span class="d">Day 2</span><div><b>Worker pipeline and evals together.</b><span>Scope gate, retrieval, generation, citation check, at least forty eval cases, zero uncited figures.</span></div></div>
+      <div class="day"><span class="d">Day 3</span><div><b>Channels.</b><span>Africa's Talking sandbox wiring, the judge panel, GSM-7 segmentation inside the two-SMS budget.</span></div></div>
+      <div class="day"><span class="d">Day 4</span><div><b>Red team and dry run.</b><span>Adversarial evals, recorded replay, a rehearsal of "which document, which page?"</span></div></div>
+    </div>
   </section>
 
   <!-- ============ COLLABORATION ============ -->
-  <section id="collab">
-    <p class="kicker">Working together</p>
-    <h2>Team collaboration — how to plug in</h2>
-    <ol class="steps">
-      <li><b>Read <code>SPEC.md</code> first.</b><span>It is the contract. The fixed rules and non-goals are not open for re-negotiation mid-build; if you think something must change, raise it before writing code.</span></li>
-      <li><b>Clone and set up.</b><span><code>git clone &lt;repo&gt;</code> → Python: <code>python -m venv .venv &amp;&amp; pip install -r requirements.txt</code> · Worker: <code>npm install</code> → <code>npx wrangler dev</code>. Secrets via <code>wrangler secret</code> / <code>.dev.vars</code> — never committed.</span></li>
-      <li><b>Claim a lane.</b><span>A — Corpus &amp; ingestion (Python). B — Worker pipeline &amp; guardrails (TypeScript). C — SMS + demo UI &amp; judge panel. D — Evals &amp; red-team. Lanes touch at two interfaces only: the chunk metadata schema and the Worker’s message contract — agree those on Day 0 and freeze them.</span></li>
-      <li><b>Branch per task, small commits.</b><span>Branch off <code>main</code> as <code>feat/scope-gate</code>, <code>fix/gsm7-segmentation</code>… Conventional prefixes: <code>feat:</code> <code>fix:</code> <code>chore:</code> <code>docs:</code> <code>test:</code>. <code>main</code> stays deployable at all times.</span></li>
-      <li><b>Every PR ships with an eval case.</b><span>New behaviour = new entry in <code>evals/messages.yaml</code>. The harness replaying green is our merge gate — no eval, no merge.</span></li>
-      <li><b>Daily 10-minute sync.</b><span>Three questions each: what merged, what’s blocked, does anything threaten a fixed rule. Anything threatening a guardrail stops the line immediately.</span></li>
-      <li><b>Definition of done.</b><span>Acceptance criteria in <code>SPEC.md</code> pass, eval harness green in CI, reviewer checklist run clean, committed and pushed. Not before.</span></li>
-    </ol>
+  <section id="collab" class="wrap">
+    <div class="section-head reveal">
+      <h2>How the team plugs in</h2>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><span class="n">1</span><div><b>Read <code>SPEC.md</code> first.</b><span>It is the contract. Raise a change before writing code, not after.</span></div></div>
+      <div class="step"><span class="n">2</span><div><b>Claim a lane.</b><span>Corpus, Worker pipeline, SMS and demo UI, or evals. Lanes touch at two interfaces only.</span></div></div>
+      <div class="step"><span class="n">3</span><div><b>Branch per task.</b><span>Small commits, conventional prefixes. <code>main</code> stays deployable.</span></div></div>
+      <div class="step"><span class="n">4</span><div><b>Every change ships with an eval case.</b><span>No eval, no merge.</span></div></div>
+      <div class="step"><span class="n">5</span><div><b>Ten-minute daily sync.</b><span>What merged, what's blocked, does anything threaten a fixed rule.</span></div></div>
+      <div class="step"><span class="n">6</span><div><b>Secrets never touch source.</b><span>Environment variables and <code>wrangler secret</code> only.</span></div></div>
+    </div>
   </section>
 
-  <footer>
-    <p><strong>Nitapata?</strong> · Kilimo track, AI Mashinani · Draft team hub, September 2026. The system either answers with a citation, asks one clarifying question, or states its boundary — never a fourth option.</p>
-  </footer>
 </main>
 
+<footer class="wrap">
+  <p><strong>Nitapata?</strong> · Kilimo track, AI Mashinani, September 2026. The system either answers with a citation, asks one clarifying question, or states its boundary, never a fourth option.</p>
+</footer>
+
 <script>
-  const tabs = document.querySelectorAll('.tabs button');
-  tabs.forEach(btn => btn.addEventListener('click', () => {
-    tabs.forEach(b => b.setAttribute('aria-selected', b === btn));
-    document.querySelectorAll('.thread').forEach(t => t.hidden = t.id !== btn.dataset.thread);
-  }));
+  // Tabs: click to switch thread, keyboard arrows for the same control
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tabs button'));
+  function selectTab(btn){
+    tabs.forEach(function(b){ b.setAttribute('aria-selected', b === btn); });
+    document.querySelectorAll('.thread').forEach(function(t){ t.hidden = t.id !== btn.dataset.thread; });
+  }
+  tabs.forEach(function(btn, i){
+    btn.addEventListener('click', function(){ selectTab(btn); });
+    btn.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowRight') tabs[(i + 1) % tabs.length].focus();
+      if (e.key === 'ArrowLeft') tabs[(i - 1 + tabs.length) % tabs.length].focus();
+    });
+  });
+
+  // Reveal-on-scroll, skipped entirely under reduced motion
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) { entry.target.classList.add('is-visible'); io.unobserve(entry.target); }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('is-visible'); });
+  }
 </script>
 </body>
 </html>
