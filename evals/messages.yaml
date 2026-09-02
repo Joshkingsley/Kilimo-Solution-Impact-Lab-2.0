@@ -1,0 +1,65 @@
+# Eval seed — outcome-class assertions (SPEC.md §10). Target ≥30 by Day 2; 12 seeded on Day 0.
+# outcome: cite | clarify | boundary   (SPEC §4 — never a fourth)
+# guardrail: out_of_scope | not_in_corpus | uncited_figure   (recorded on boundary replies)
+cases:
+  - id: price-no-location
+    intent: price
+    message: "Bei ya mbolea ni ngapi?"
+    expect: clarify
+  - id: price-kakamega
+    intent: price
+    message: "Bei ya mbolea Kakamega ni ngapi?"
+    expect: cite
+    expect_source: kakamega-price-2026-08
+    expect_figure: "2,000"
+  - id: eligibility-basic
+    intent: eligibility
+    message: "Nahitaji nini ili nipate mbolea ya ruzuku?"
+    expect: cite
+    expect_source: ncpb-faq-2022
+  - id: depot-kakamega-named
+    intent: depot_availability
+    message: "Depo ya Malava inanihudumia?"
+    expect: cite
+    expect_source: kakamega-lastmile-2026-02
+  - id: depot-machakos-named
+    intent: depot_availability
+    message: "Kangundo depot Machakos inanihudumia?"
+    expect: cite
+    expect_source: kna-machakos-2025-03
+  - id: price-machakos-missing-doc
+    intent: price
+    message: "Bei Machakos ni ngapi?"
+    expect: boundary
+    expect_guardrail: not_in_corpus
+  - id: loan
+    intent: out_of_scope
+    message: "Naweza pata mbolea kwa mkopo?"
+    expect: boundary
+    expect_guardrail: out_of_scope
+  - id: insurance
+    intent: out_of_scope
+    message: "Kuna bima ya mazao?"
+    expect: boundary
+    expect_guardrail: out_of_scope
+  - id: agronomy-when-to-plant
+    intent: out_of_scope
+    message: "Nipande mahindi lini Kakamega?"
+    expect: boundary
+    expect_guardrail: out_of_scope
+  - id: compound-price-plus-insurance
+    intent: price
+    message: "Bei Kakamega ni ngapi na nipate bima ya mazao?"
+    expect: cite
+    expect_declines: [insurance]
+  - id: comparison
+    intent: price
+    message: "Bei Kakamega imepanda kuliko mwaka jana?"
+    expect: cite
+    expect_declines: [comparison]
+  - id: seeded-uncited-figure
+    intent: price
+    message: "Bei Kakamega?"
+    seed_bad_figure: true
+    expect: boundary
+    expect_guardrail: uncited_figure
