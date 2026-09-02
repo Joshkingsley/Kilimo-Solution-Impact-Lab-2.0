@@ -1,0 +1,158 @@
+# Nitapata? source registry — the single place a document enters the system.
+# Schema: SPEC.md §7.4. Authority ranks: SPEC.md §5 Pin 2 (closed 2026-09-02).
+# Snapshots live in corpus/raw/ (committed). Media outlets are never listed here.
+
+sources:
+  - doc_id: ncpb-faq-2022
+    title: NCPB Government Subsidized Fertilizer Program — Frequently Asked Questions
+    short_cite: NCPB FAQ
+    publisher: National Cereals and Produce Board
+    doc_type: ncpb_faq
+    authority: primary
+    url: https://ncpb.co.ke/wp-content/uploads/dlm_uploads/2022/10/Faqs-A3.pdf
+    retrieved_at: 2026-09-02
+    sha256: 125e5cb00a907f185b6530813d9937363f72d1796b266cb0b5c6c3d7cdac968f
+    raw_path: corpus/raw/ncpb-subsidy-faq-2022-10.pdf
+    format: pdf-text          # one A3 page, real text layer, no OCR needed
+    publish_date: 2022-10-01
+    cycle: 2022-SR
+    county: null
+    lang: en
+    use_for: [eligibility, registration_process, evoucher_redemption, depot_availability]
+    do_not_use_for: [price]   # 2022 prices (DAP 3,500 etc.) are superseded
+
+  - doc_id: kilimo-nfsp-2025lr-launch
+    title: CS Dr Andrew Karanja presides over the launch of the 2025 Long Rains NFSP at NCPB GPC Depot, Nairobi
+    short_cite: Wizara ya Kilimo
+    publisher: Ministry of Agriculture and Livestock Development
+    doc_type: ministry_statement
+    authority: primary
+    url: https://kilimo.go.ke/cs-dr-andrew-karanja-has-presided-over-the-launch-of-the-2025-long-rains-national-fertilizer-subsidy-programme-nfsp-at-the-ncpb-gpc-depot-nairobi/
+    retrieved_at: 2026-09-02
+    sha256: 481e8cb47f34d81cf6d14b9844c0605d4580e2d491ef07bc5d42ee0465870e1c
+    raw_path: corpus/raw/kilimo-nfsp-2025-long-rains-launch.html
+    format: html
+    publish_date: 2024-12-18
+    cycle: 2025-LR
+    county: null
+    lang: en
+    use_for: [evoucher_redemption, cycle_timing, price-historic]
+    notes: kilimo.go.ke serves a self-signed certificate; fetched with curl -k.
+
+  - doc_id: kilimo-streaming-2024-12
+    title: Streaming Distribution and Issuance of Subsidized Fertilizer Across the Country
+    short_cite: Wizara ya Kilimo
+    publisher: Ministry of Agriculture and Livestock Development
+    doc_type: ministry_statement
+    authority: primary
+    url: https://kilimo.go.ke/streaming-distribution-and-issuance-of-subsidized-fertilizer-across-the-country/
+    retrieved_at: 2026-09-02
+    sha256: 966b49bd3013ef47d3f9f67cff23092e64491fc8f219010aaa49936727608d67
+    raw_path: corpus/raw/kilimo-streaming-distribution.html
+    format: html
+    publish_date: 2024-12-19
+    cycle: 2025-LR
+    county: null
+    lang: en
+    use_for: [depot_availability, price-historic]
+
+  - doc_id: kakamega-lastmile-2026-02
+    title: County Government Intensifies Last Mile Subsidised Fertiliser Distribution Ahead of Heavy Rains
+    short_cite: Kaunti ya Kakamega
+    publisher: County Government of Kakamega
+    doc_type: county_advisory
+    authority: primary          # county-scoped figures only (SPEC §5 Pin 2)
+    url: https://kakamega.go.ke/county-government-intensifies-last-mile-subsidised-fertiliser-distribution-ahead-of-heavy-rains/
+    retrieved_at: 2026-09-02
+    sha256: 361b91fba0b79d216343270348b7af0200e6391f4d1fdf85d134633c5c355ba4
+    raw_path: corpus/raw/kakamega-last-mile-distribution.html
+    format: html
+    publish_date: 2026-02-26
+    cycle: 2026-LR
+    county: kakamega
+    lang: en
+    use_for: [depot_availability, eligibility, evoucher_redemption, price-historic]
+
+  - doc_id: kakamega-price-2026-08
+    title: Government Reduces Fertilizer Price to KSh 2,000 as NCPB Delivers Subsidized Fertilizer Across Kakamega
+    short_cite: Kaunti ya Kakamega
+    publisher: County Government of Kakamega
+    doc_type: county_advisory
+    authority: primary          # county-scoped figures only (SPEC §5 Pin 2)
+    url: https://kakamega.go.ke/government-reduces-fertilizer-price-to-ksh-2000-as-ncpb-delivers-subsidized-fertilizer-across-kakamega/
+    retrieved_at: 2026-09-02
+    sha256: a1a5f3ee9b663fc4fab9efc8e48b52c345d8ab48f41c83ebb490296424856dc6
+    raw_path: corpus/raw/kakamega-price-ksh2000.html
+    format: html
+    publish_date: 2026-08-24
+    cycle: 2026-SR
+    county: kakamega
+    lang: en
+    use_for: [price, depot_availability, cycle_timing]
+    notes: >
+      Only primary document located for the Aug-2026 KSh 2,500 -> 2,000 cut
+      (announced by the President 2026-08-23; media only). A kilimo.go.ke or
+      NCPB statement, when published, outranks this for the national figure.
+
+  - doc_id: kna-machakos-2025-03
+    title: Farmers assured of steady subsidised fertiliser supply (Machakos)
+    short_cite: KNA Machakos
+    publisher: Kenya News Agency
+    doc_type: kna_report
+    authority: supporting       # never a sole citation for a price
+    url: https://www.kenyanews.go.ke/farmers-assured-of-steady-subsidised-fertiliser-supply/
+    retrieved_at: 2026-09-02
+    sha256: 43441015eea5ee8dc825e85d2c09753018225a032bb6ad9a3ddaa02ad4bc107d
+    raw_path: corpus/raw/kenyanews-machakos-four-depots.html
+    format: html
+    publish_date: 2025-03-26
+    cycle: 2025-LR
+    county: machakos
+    lang: en
+    use_for: [depot_availability]
+    notes: Says "four allocated depots in Machakos" but names none; no price.
+
+  - doc_id: kiamis-home
+    title: KIAMIS — Kenya Integrated Agricultural Management Information System
+    short_cite: KIAMIS
+    publisher: KALRO / Ministry of Agriculture
+    doc_type: kiamis_guide
+    authority: supporting
+    url: https://kiamislive.kalro.org/
+    retrieved_at: 2026-09-02
+    sha256: 9971e7242f5a9a59c33ed46c7c72542bac75983d0a34cf0980242c0b7f48baad
+    raw_path: corpus/raw/kiamis-home.html
+    format: html
+    publish_date: 2026-09-02    # undated page; snapshot date used
+    cycle: null
+    county: null
+    lang: en
+    use_for: [registration_process, evoucher_redemption]
+    notes: Describes registry + e-voucher system, toll-free 0800 724 891; no step list.
+
+  - doc_id: kna-evoucher-2020
+    title: State Unveils e-Voucher System
+    short_cite: KNA 2020
+    publisher: Kenya News Agency
+    doc_type: kna_report
+    authority: secondary        # pilot-era description; context only, never cited as current process
+    url: https://www.kenyanews.go.ke/state-unveils-e-voucher-system/
+    retrieved_at: 2026-09-02
+    sha256: abaf24746bec51daa2e0f5b8d7d747af185a833142aa4ef05aa9fddd3499d35a
+    raw_path: corpus/raw/kenyanews-evoucher-unveiled.html
+    format: html
+    publish_date: 2020-08-27
+    cycle: null
+    county: null
+    lang: en
+    use_for: []
+    do_not_use_for: [evoucher_redemption]
+
+wanted_not_found:
+  - Kenya Gazette notice establishing/pricing the NFSP (legal_basis). Free-text
+    search on gazettes.africa and new.kenyalaw.org returned nothing 2026-09-02;
+    kenyalaw returns 403 to fetchers. Retry by browsing Gazette Vol/No.
+  - Any Machakos County Government document on the subsidy.
+  - Named list of Kakamega's 20 collection points (16 county + 4 NCPB).
+  - Ministry/NCPB statement for the Aug-2026 KSh 2,000 price.
+  - KIAMIS step-by-step e-voucher redemption from a primary page.
