@@ -1,0 +1,28 @@
+# Nitapata? — answer service Worker
+# Secrets (ANTHROPIC_API_KEY, AT_API_KEY, AT_USERNAME) via `wrangler secret put`, never here.
+
+name = "nitapata"
+main = "worker/src/index.ts"
+compatibility_date = "2026-08-01"
+
+[ai]
+binding = "AI"
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "nitapata-corpus"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nitapata-corpus"
+database_id = "REPLACE_AFTER_wrangler_d1_create"
+
+[[kv_namespaces]]
+binding = "CLARIFY_KV"
+id = "REPLACE_AFTER_wrangler_kv_namespace_create"
+
+[vars]
+DEFAULT_LANG = "sw"
+CLARIFY_TTL_SECONDS = "900"
+CURRENT_CYCLE = "2026-SR"
+DEMO_COUNTY = "kakamega"

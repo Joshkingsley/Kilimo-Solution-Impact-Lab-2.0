@@ -1,0 +1,23 @@
+[project]
+name = "nitapata"
+version = "0.0.1"
+description = "Citation-locked fertiliser subsidy assistant — ingestion CLI and eval harness"
+requires-python = ">=3.12"
+dependencies = [
+  "pyyaml>=6",
+  "pypdf>=5",
+  "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+nitapata = "ingest.cli:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "evals"]
