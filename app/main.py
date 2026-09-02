@@ -1,10 +1,18 @@
-"""Nitapata? — SMS webhook, judge-panel API and static judge panel (FastAPI).
+"""Nitapata? — SMS webhook, judge-panel API, static judge panel, and the RAG service router.
 
 Africa's Talking POSTs each inbound SMS to /sms/inbound; we hash the number,
-run nitapata.pipeline.handle (SPEC §9.2) and reply through the Africa's Talking
-SDK, or log the reply in DRY_RUN. The same pipeline is exposed as JSON at
-/demo/message for the judge panel (served at /judge) and the recorded replay
-(/replay).
+run nitapata.pipeline.handle (SPEC §9.2: keywords, scope gate, state, retrieval,
+generation, citation check, frozen template, GSM-7) and reply through the
+Africa's Talking SDK, or log the reply in DRY_RUN. The same pipeline is exposed
+as JSON at /demo/message for the judge panel (served at /judge) and the
+recorded replay (/replay).
+
+The teammate's RAG service (app/rag, see docs/RAG.md) is mounted under
+/v1/rag/* behind its own API keys. It is stateless retrieve -> generate ->
+citation-check; the channel layer above (state, keywords, segmentation) is
+what nitapata/ provides. Wiring nitapata's steps 5–7 onto app.rag is the
+next integration step; today both engines run side by side and the SMS
+webhook uses the nitapata pipeline (57 tests green on the templated path).
 
 Environment (see .env.example):
     AT_USERNAME, AT_API_KEY, AT_SENDER_ID  — Africa's Talking ("sandbox" username for testing)
@@ -22,6 +30,7 @@ import hmac
 import logging
 import os
 import sys
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
@@ -32,9 +41,9 @@ from pydantic import BaseModel, Field
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from nitapata import constants
-from nitapata.pipeline import handle
-from nitapata.retrieve import index
+from nitapata import constants  # noqa: E402
+from nitapata.pipeline import handle  # noqa: E402
+from nitapata.retrieve import index  # noqa: E402
 
 log = logging.getLogger("nitapata")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -43,9 +52,43 @@ HMAC_SECRET = os.environ.get("MSISDN_HMAC_SECRET", "")
 DRY_RUN = os.environ.get("DRY_RUN", "").lower() in ("1", "true", "yes")
 WEB = ROOT / "web"
 
-app = FastAPI(title="Nitapata?", version="0.2.0", docs_url="/docs")
+# --- optional RAG service (app/rag) -------------------------------------------
+# Imported defensively: the SMS webhook must keep working even if the RAG's
+# dependencies (numpy, pdfplumber, bs4) or configuration are missing.
+try:
+    from app.rag.api import router as rag_router  # /v1/rag/*, API-key protected (docs/RAG.md)
+    from app.rag.pipeline import build_pipeline
+    from app.rag.security import install_log_redaction
+
+    install_log_redaction()  # SPEC §13: anything phone-number-shaped is redacted from every log line
+    RAG_AVAILABLE = True
+except Exception as exc:  # noqa: BLE001 — any import/config problem just disables the optional router
+    log.warning("RAG service not mounted: %s", exc)
+    rag_router = None
+    build_pipeline = None
+    RAG_AVAILABLE = False
 
 
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    """Build the RAG pipeline once (SQLite index, embedder, LLM client) if available."""
+    app.state.pipeline = None
+    if build_pipeline is not None:
+        try:
+            app.state.pipeline = build_pipeline()
+        except Exception as exc:  # noqa: BLE001 — the SMS webhook must keep working regardless
+            log.error("RAG pipeline unavailable: %s", exc)
+    yield
+    if getattr(app.state, "pipeline", None) is not None:
+        app.state.pipeline.store.close()
+
+
+app = FastAPI(title="Nitapata?", version="0.3.0", docs_url="/docs", lifespan=_lifespan)
+if rag_router is not None:
+    app.include_router(rag_router)
+
+
+# --- helpers -----------------------------------------------------------------
 def hash_msisdn(msisdn: str) -> str:
     """HMAC-SHA256 of the phone number: the ONLY identifier that reaches the pipeline, state or logs."""
     if not HMAC_SECRET:
@@ -64,9 +107,11 @@ def deliver(msisdn: str, message: str) -> dict[str, Any] | None:
     return sendsms.send_sms(msisdn, message)
 
 
+# --- routes ------------------------------------------------------------------
 @app.get("/", response_class=PlainTextResponse)
 def root() -> str:
-    return "Nitapata? webhook. POST /sms/inbound (Africa's Talking), POST /demo/message (JSON), GET /judge, GET /health"
+    return ("Nitapata? webhook. POST /sms/inbound (Africa's Talking), POST /demo/message (JSON), "
+            "GET /judge, GET /health" + (", /v1/rag/* (API key)" if RAG_AVAILABLE else ""))
 
 
 @app.get("/health")
@@ -80,6 +125,7 @@ def health() -> dict[str, Any]:
         "dry_run": DRY_RUN,
         "at_configured": bool(os.environ.get("AT_API_KEY")),
         "llm": constants.MODEL_ID if os.environ.get("ANTHROPIC_API_KEY") and os.environ.get("NITAPATA_USE_LLM", "1") != "0" else "rules-v1",
+        "rag_service": RAG_AVAILABLE,
     }
 
 

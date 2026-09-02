@@ -68,3 +68,10 @@ virtualenv==21.7.8
 watchfiles==1.2.0
 wcwidth==0.8.3
 websockets==17.1
+
+# --- RAG service (app/rag) ---
+anthropic>=1.3.0
+numpy>=2.3
+pdfplumber>=0.11
+beautifulsoup4>=4.13
+pytest>=8

@@ -1,0 +1,60 @@
+# SYNTHETIC TEST FIXTURES — not real government documents. Used only by the test-suite.
+sources:
+  - doc_id: fx-ncpb-price-2026-lr
+    title: "NCPB Notice: 2026 Long Rains Subsidy Prices (FIXTURE)"
+    short_cite: NCPB Notice
+    publisher: NCPB
+    doc_type: ncpb_notice
+    authority: primary
+    url: "https://ncpb.co.ke/fixtures/2026-lr-prices"
+    raw_path: corpus/raw/fx-ncpb-price-2026-lr.txt
+    publish_date: 2026-02-10
+    cycle: 2026-LR
+    county: null
+    lang: en
+  - doc_id: fx-ministry-price-2025-lr
+    title: "MoALD Statement: Launch of the 2025 Long Rains NFSP (FIXTURE)"
+    publisher: Ministry of Agriculture
+    doc_type: ministry_statement
+    authority: primary
+    url: "https://kilimo.go.ke/fixtures/2025-lr-launch"
+    raw_path: corpus/raw/fx-ministry-price-2025-lr.txt
+    publish_date: 2024-12-18
+    cycle: 2025-LR
+    county: null
+    lang: en
+  - doc_id: fx-kiamis-guide
+    title: "KIAMIS Farmer Registration and E-Voucher Guide (FIXTURE)"
+    publisher: KALRO
+    doc_type: kiamis_guide
+    authority: primary
+    url: "https://kiamislive.kalro.org/fixtures/guide"
+    raw_path: corpus/raw/fx-kiamis-guide.txt
+    publish_date: 2025-10-01
+    cycle: null
+    county: null
+    lang: en
+  - doc_id: fx-machakos-advisory
+    title: "Machakos County Agriculture Advisory, 2026 Long Rains (FIXTURE)"
+    publisher: County Government of Machakos
+    doc_type: county_advisory
+    authority: supporting
+    url: "https://machakos.go.ke/fixtures/advisory-2026"
+    raw_path: corpus/raw/fx-machakos-advisory.txt
+    publish_date: 2026-02-12
+    cycle: 2026-LR
+    county: Machakos
+    lang: en
+  - doc_id: fx-hansard-secondary
+    title: "National Assembly Hansard Extract (FIXTURE)"
+    short_cite: Hansard
+    do_not_use_for: [price]
+    publisher: Parliament of Kenya
+    doc_type: parliamentary_statement
+    authority: secondary
+    url: "https://parliament.go.ke/fixtures/hansard"
+    raw_path: corpus/raw/fx-hansard-secondary.txt
+    publish_date: 2026-01-20
+    cycle: null
+    county: null
+    lang: en
